@@ -17,7 +17,35 @@ on:
     - cron: '00 22 * * 0'
 
 jobs:
+  install:  
+    runs-on: ubuntu-latest
+    steps:  
+
+      # ----------------------------------------------------------------
+      # Setup required toolchains and license
+      # ----------------------------------------------------------------
+
+      # https://github.com/actions/checkout
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      # https://github.com/actions/setup-python
+      - name: Setup Python 3.9 📦
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      # https://github.com/ARM-software/cmsis-actions
+      - name: Activate vcpkg 🎁
+        uses: ARM-software/cmsis-actions/vcpkg@v1
+
+      # https://github.com/ARM-software/cmsis-actions
+      - name: Activate Arm tool license
+        uses: ARM-software/cmsis-actions/armlm@v1
+    
+
   ci_build_run:
+    needs: [install]   
     strategy:
       matrix:
 
@@ -93,11 +121,11 @@ jobs:
       - name: CI build run 03
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}/${{ matrix.build.type }}.clog
+          name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.clog
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/hello_world.${{ matrix.build.type }}+${{ matrix.target.type }}.clog
 
   ci_execute_builds:
-    needs: [ci_build_run] 
+    needs: [install, ci_build_run]
 
     strategy:
       matrix:
@@ -149,14 +177,14 @@ jobs:
         uses: ARM-software/cmsis-actions/armlm@v1      
 
 
-
       # ----------------------------------------------------------------
       # Download previous generated executables
       # ----------------------------------------------------------------
       - name: Download built folders ⏬
         uses: actions/download-artifact@v4
         with:
-          name: built
+          name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.clog
+          path: artificats
 
       # ----------------------------------------------------------------
       # Execute the previous generated context on a model
