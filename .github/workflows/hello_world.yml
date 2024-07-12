@@ -1,0 +1,170 @@
+name: Simple Hello World example
+
+on:
+  workflow_dispatch:
+
+  pull_request:
+    branches: [main]
+
+  push:
+    branches: [main]
+
+  schedule:
+    - cron: '00 22 * * 0'
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+
+      # ----------------------------------------------------------------
+      # Setup required toolchains and license
+      # ----------------------------------------------------------------
+
+      # https://github.com/actions/checkout
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      # https://github.com/actions/setup-python
+      - name: Setup Python 3.9 📦
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      # https://github.com/ARM-software/cmsis-actions
+      - name: Activate vcpkg 🎁
+        uses: ARM-software/cmsis-actions/vcpkg@v1
+
+      # https://github.com/ARM-software/cmsis-actions
+      - name: Activate Arm tool license
+        uses: ARM-software/cmsis-actions/armlm@v1
+
+
+  ci_build_run:
+    runs-on: ubuntu-latest
+    needs: install
+
+    strategy:
+      matrix:
+
+        compiler: [ 
+          {name: AC6,  ext: axf}, 
+          {name: GCC,  ext: elf}
+        ]
+
+        target: [
+          {type: ARMCM0,   model: tbd,  board: tbd}, 
+          {type: ARMCM0P,  model: tbd,  board: tbd}, 
+          {type: ARMCM1,   model: tbd,  board: tbd}, 
+          {type: ARMCM3,   model: tbd,  board: tbd}, 
+          {type: ARMCM55,  model: tbd,  board: tbd}, 
+          {type: ARMCM85,  model: tbd,  board: tbd}
+        ]
+
+        build: [ 
+          {type: Debug}, 
+          {type: Release}
+        ]
+
+      max-parallel: 1
+
+    steps:
+
+      # ----------------------------------------------------------------
+      # Build executable for a specific target compiler pair
+      # ----------------------------------------------------------------
+      - name: CI build run 01
+        run: |
+          echo "Build executable for a specific target compiler pair"
+            cbuild hello_world.csolution.yml --update-rte --packs --context \       
+                hello_world.${{ matrix.target.type }}+${{ matrix.build.type }} \
+                --toolchain ${{ matrix.compiler.name }} -r \
+                | tee ${{ matrix.target.type }}_${{ matrix.build.type }}_${{ matrix.compiler.name }}.build.log
+
+      # ----------------------------------------------------------------
+      # Diagnosis: Show the directory structure of the project folder
+      # ----------------------------------------------------------------
+      - name: CI build run 02
+        run: |
+          echo "Diagnosis: Show the directory structure of the project output folder"
+          tree ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
+
+      # ----------------------------------------------------------------
+      # Upload build log
+      # ----------------------------------------------------------------
+      - name: CI build run 03
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.compiler.name }}/${{ matrix.target.type }}/hello_world.${{ matrix.build.type }}.clog
+          path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/hello_world.${{ matrix.build.type }}+${{ matrix.target.type }}.clog
+
+  ci_execute_builds:
+    runs-on: ubuntu-latest
+    needs: install 
+
+    strategy:
+      matrix:
+
+        compiler: [ 
+          {name: AC6,  ext: axf}, 
+          {name: GCC,  ext: elf}
+        ]
+
+        target: [
+          {type: ARMCM0,   model: tbd,  board: tbd}, 
+          {type: ARMCM0P,  model: tbd,  board: tbd}, 
+          {type: ARMCM1,   model: tbd,  board: tbd}, 
+          {type: ARMCM3,   model: tbd,  board: tbd}, 
+          {type: ARMCM55,  model: tbd,  board: tbd}, 
+          {type: ARMCM85,  model: tbd,  board: tbd}
+        ]
+
+        build: [ 
+          {type: Debug}, 
+          {type: Release}
+        ]
+
+      max-parallel: 1
+
+    steps:
+
+      # ----------------------------------------------------------------
+      # Download previous generated executables
+      # ----------------------------------------------------------------
+      - name: Download built folders ⏬
+        uses: actions/download-artifact@v4
+        with:
+          name: built
+
+      # ----------------------------------------------------------------
+      # Execute the previous generated context on a model
+      # ----------------------------------------------------------------
+      - name: CI execute builds msg 01
+        run: |
+          echo "CI execute builds msg 01"
+
+      # ----------------------------------------------------------------
+      # Upload FVP simulation results
+      # ----------------------------------------------------------------
+      - name: CI execute builds msg 02
+        run: |
+          echo "CI execute builds msg 02"
+
+
+      # ----------------------------------------------------------------
+      # Diagnosis: Show the directory structure of ./out folder
+      # ----------------------------------------------------------------
+      - name: CI execute builds msg 03
+        run: |
+          echo "CI execute builds msg 03"
+
+
+
+
+
+
+
+
+
+
+

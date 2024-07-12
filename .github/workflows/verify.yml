@@ -20,3 +20,4 @@ jobs:
           branch: ${{ github.ref }}
           project-file: ./hello.csolution.yml
           API_TOKEN: ${{ secrets.CMSIS_API_KEY }}
+

@@ -1,0 +1,147 @@
+solution:
+  description: Simple Hello World example for different cores
+  created-for: CMSIS-Toolbox@2.4.0
+
+  # Use default setup of toolchain specific controls.
+  cdefault: 
+
+  # List the packs that define the device and/or board.
+  packs:
+    - pack: ARM::CMSIS@6.1.0
+    - pack: ARM::V2M-MPS3_SSE_200_BSP@1.0.0
+    - pack: ARM::V2M_MPS3_SSE_300_BSP@1.5.0
+    - pack: ARM::V2M_MPS3_SSE_300_BSP@1.1.0
+    - pack: ARM::V2M_MPS3_SSE_310_BSP@1.4.0
+    - pack: ARM::SSE_315_BSP@1.0.0
+    - pack: ARM::Cortex_DFP@1.1.0
+    - pack: ARM::V2M-MPS2_SSE_200_BSP@2.0.0 
+    - pack: ARM::V2M-MPS3_SSE_200_BSP@1.0.0 
+    - pack: ARM::CMSIS-RTX@5.9.0
+    - pack: ARM::CMSIS-Compiler@2.1.0
+    - pack: ARM::TFM@2.1.0
+    - pack: ARM::V2M_MPS3_SSE_300_TFM-PF@1.0.0
+
+  target-types:
+
+    - type: ARMCM0                                    # Builds with: AC6, GCC
+      device: ARM::ARMCM0
+      misc:
+        - for-compiler: GCC
+          Link:
+          - --specs=nosys.specs                       # By using the setting - --specs=nano.specs the linker throws errors i.e.  undefined reference to `_exit', `_close', `_lseek',  `_read', `_write', `_sbrk', `_fstat', `_isatty' 
+                                                      # collect2.exe: error: ld returned 1 exit status
+
+    - type: ARMCM0P                                   # Builds with: AC6, GCC
+      device: ARM::ARMCM0P
+      misc:
+        - for-compiler: GCC
+          Link:
+          - --specs=nosys.specs
+
+    - type: ARMCM1                                    # Builds with: AC6, GCC
+      device: ARM::ARMCM1
+      misc:
+        - for-compiler: GCC
+          Link:
+          - --specs=nosys.specs
+
+    - type: ARMCM3                                    # Builds with: AC6, GCC
+      device: ARM::ARMCM3
+      misc:
+        - for-compiler: GCC
+          Link:
+          - --specs=nosys.specs
+
+    - type: ARMCM4                                    # Builds with: AC6
+      device: ARM::ARMCM4                             # For GCC: ---> -mcpu=cortex-m85+nopacbti
+      misc:
+        - for-compiler: AC6
+          C-CPP:
+            - -mfloat-abi=soft
+        - for-compiler: GCC
+          C-CPP:
+            - -mfloat-abi=soft
+          Link:
+            - --specs=nosys.specs
+
+    - type: ARMCM7                                    # Builds with: AC6
+      device: ARM::ARMCM7
+      misc:
+        - for-compiler: AC6
+          C-CPP:
+            - -mfloat-abi=soft
+        - for-compiler: GCC
+          C-CPP:
+            - -mfloat-abi=soft
+
+    - type: ARMCM23                                   # Builds with: AC6
+      device: ARM::ARMCM23
+
+    - type: ARMCM33                                   # Builds with: AC6 
+      device: ARM::ARMCM33                            # #error "Compiler generates DSP (SIMD) instructions for a devices without DSP extensions (check __DSP_PRESENT)"    Failed for AC6 + GCC
+
+    - type: ARMCM35P                                  # Builds with: AC6
+      device: ARM::ARMCM35P                           # #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"                    Failed for AC6 + GCC 
+
+    - type: ARMCM52                                   # Builds with: AC6
+      device: ARM::ARMCM52                            # GCC Error: CPU is not supported!; AC6: /PACK/ARM/CMSIS/5.9.0/Device/ARM/ARMCM52/Include\ARMCM52.h:109:10: fatal error: 'system_ARMCM55.h' file not found    Failed for AC6 + GCC
+      misc:
+        - for-compiler: AC6
+          C:
+           - -Wno-macro-redefined
+      define:
+        - PWRMODCTL_CPDLPSTATE_ELPSTATE_Msk
+        - PWRMODCTL_CPDLPSTATE_ELPSTATE_Pos
+
+    - type: ARMCM55                                   # Builds with: AC6, GCC
+      device: ARM::ARMCM55                            # 
+
+    - type: ARMCM85                                   # Builds with: AC6, GCC
+      device: ARM::ARMCM85                            # (GCC) https://community.arm.com/support-forums/f/compilers-and-libraries-forum/53637/error-conflicting-cpu-architectures-2-21
+      misc:                                           # https://stackoverflow.com/questions/44153706/conflicting-cpu-architectures-1-13-when-compiling-for-cortex-m4
+        - for-compiler: GCC
+          C-CPP:
+            - -mcpu=cortex-m85+nopacbti
+
+    - type: SMM-SSE-200___V2M-MPS2-SSE-200B           #
+      device: SMM-SSE-200                             # ARM Cortex-M33. Failed to build 
+      board: V2M-MPS2-SSE-200:B
+
+    - type: SSE-200-MPS3___V2M-MPS3-SSE-200B          #
+      device: SSE-200-MPS3                            # ARM Cortex-M33. Failed to build 
+      board: V2M-MPS3-SSE-200:B
+
+    - type: SSE-300-MPS3___V2M-MPS3-SSE-300-FVP       #
+      device: SSE-300-MPS3                            # ARM Cortex-M55, https://www.keil.arm.com/devices/arm-sse-300-mps3/
+      board: V2M-MPS3-SSE-300-FVP                     # https://www.keil.arm.com/devices/arm-sse-300-mps3/boards/
+
+    - type: ARMCM85___V2M-MPS3-SSE-310                #
+      device: ARMCM85                                 # ARM Cortex-M85
+      board: V2M-MPS3-SSE-310                         # https://www.keil.arm.com/devices/arm-sse-310-mps3-fvp/boards/
+
+    - type: SSE-310-MPS3_AN555___V2M-MPS3-SSE-310     #
+      device: SSE-310-MPS3_AN555                      # ARM Cortex-M85
+      board: V2M-MPS3-SSE-310                         # https://www.keil.arm.com/devices/arm-sse-310-mps3-fvp/boards/
+
+    - type: SSE-310-MPS3_FVP___V2M-MPS3-SSE-310       #
+      device: SSE-310-MPS3_FVP                        # ARM Cortex-M85
+      board: V2M-MPS3-SSE-310                         # https://www.keil.arm.com/devices/arm-sse-310-mps3-fvp/boards/
+
+    - type: SSE-315-FVP___Corstone_315                #
+      device: SSE-315-FVP                             # ARM Cortex-M85, https://www.keil.arm.com/family/arm-arm-cortex-m85/
+      board: SSE-315
+
+  build-types:
+    - type: Debug
+      debug: on
+      optimize: none
+
+    - type: Release
+      debug: off
+      optimize: balanced
+
+  output-dirs:
+    outdir:  $SolutionDir()$/out/$Project$/$TargetType$/$BuildType$/$Compiler$
+
+  projects:
+    - project: ./hello_world.cproject.yml
