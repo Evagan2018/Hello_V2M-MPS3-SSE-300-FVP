@@ -71,10 +71,6 @@ jobs:
       # ----------------------------------------------------------------
       # Build executable for a specific target compiler pair
       # ----------------------------------------------------------------
-      - name: Test build
-        run: |
-            cbuild hello_world.csolution.yml --update-rte --packs --context hello_world.Debug+ARMCM0 --toolchain AC6 -r
-
       - name: CI build run 01
         run: |
             echo "Build executable for a specific target compiler pair "
@@ -97,7 +93,7 @@ jobs:
       - name: CI build run 03
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.compiler.name }}/${{ matrix.target.type }}/hello_world.${{ matrix.build.type }}.clog
+          name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}/${{ matrix.build.type }}.clog
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/hello_world.${{ matrix.build.type }}+${{ matrix.target.type }}.clog
 
   ci_execute_builds:
