@@ -1,4 +1,4 @@
-name: Simple Hello World example
+name: Simple Hello World example 
 
 on:
   workflow_dispatch:
@@ -122,6 +122,7 @@ jobs:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
+
   build_AC6_Debug:
     needs: [install]
     strategy:
@@ -200,7 +201,10 @@ jobs:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
+
+
   build_GCC_Release:
+  
     needs: [install]
     strategy:
       matrix:
@@ -277,6 +281,10 @@ jobs:
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+
+
+
+
 
   build_GCC_Debug:
     needs: [install]
@@ -356,13 +364,15 @@ jobs:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
+
+
   ci_execute_builds:
     needs: [
-      {install},
-      {build_AC6_Release},
-      {build_AC6_Debug},
-      {build_GCC_Release},
-      {build_GCC_Debug}
+      install,
+      build_AC6_Release,
+      build_AC6_Debug,
+      build_GCC_Release,
+      build_GCC_Debug
     ]
 
     strategy:
@@ -445,6 +455,7 @@ jobs:
       - name: CI execute builds msg 03
         run: |
           echo "CI execute builds msg 03"
+
 
 
 
