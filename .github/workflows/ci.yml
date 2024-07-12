@@ -9,12 +9,14 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
-    branches: [ main ]
-    tags-ignore:
-      - '**'
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
+
+  # push:
+  #  branches: [ main ]
+  #  tags-ignore:
+  #    - '**'
+  # pull_request:
+  #  branches: [ main ]
 
 jobs:
   publish-project-action:

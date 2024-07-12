@@ -1,12 +1,13 @@
 name: Verify CMSIS Compliance
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  schedule:
-    - cron: '0 6 * * 3'
+  workflow_dispatch:  
+  # push:
+  #  branches: [ main ]
+  # pull_request:
+  #  branches: [ main ]
+  # schedule:
+  #  - cron: '0 6 * * 3'
 
 jobs:
   verify-cmsis-compliance:
