@@ -5,9 +5,13 @@ on:
 
   pull_request:
     branches: [main]
+    paths:
+      - ./**
 
   push:
     branches: [main]
+    paths:    
+      - ./**
 
   schedule:
     - cron: '00 22 * * 0'
@@ -61,17 +65,20 @@ jobs:
 
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate Arm tool license
-        uses: ARM-software/cmsis-actions/armlm@v1      
-      
+        uses: ARM-software/cmsis-actions/armlm@v1
 
 
       # ----------------------------------------------------------------
       # Build executable for a specific target compiler pair
       # ----------------------------------------------------------------
+      - name: Test build
+        run: |
+            cbuild hello_world.csolution.yml --update-rte --packs --context hello_world.Debug+ARMCM0 --toolchain AC6 -r
+
       - name: CI build run 01
         run: |
-            echo "Build executable for a specific target compiler pair"
-            cbuild hello_world.csolution.yml --update-rte --packs --context \       
+            echo "Build executable for a specific target compiler pair "
+            cbuild hello_world.csolution.yml --update-rte --packs --context \
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
                 | tee ${{ matrix.target.type }}_${{ matrix.build.type }}_${{ matrix.compiler.name }}.build.log
@@ -121,7 +128,7 @@ jobs:
       max-parallel: 1
 
     runs-on: ubuntu-latest
-    
+
     steps:
       # ----------------------------------------------------------------
       # Setup required toolchains and license
