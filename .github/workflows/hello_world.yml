@@ -75,9 +75,9 @@ jobs:
       # ----------------------------------------------------------------
       - name: CI build run 01
         run: |
-          echo "Build executable for a specific target compiler pair"
+            echo "Build executable for a specific target compiler pair"
             cbuild hello_world.csolution.yml --update-rte --packs --context \       
-                hello_world.${{ matrix.target.type }}+${{ matrix.build.type }} \
+                hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
                 | tee ${{ matrix.target.type }}_${{ matrix.build.type }}_${{ matrix.compiler.name }}.build.log
 
@@ -100,7 +100,7 @@ jobs:
 
   ci_execute_builds:
     runs-on: ubuntu-latest
-    needs: install 
+    needs: [install, ci_build_run] 
 
     strategy:
       matrix:
