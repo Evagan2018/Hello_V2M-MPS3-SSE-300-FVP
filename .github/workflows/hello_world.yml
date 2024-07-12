@@ -98,16 +98,15 @@ jobs:
       # Build executable for a specific target compiler pair
       # ----------------------------------------------------------------
       - name: CI build run 01
+        working-directory: ./
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --update-rte --packs --context \
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-            pushd ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/
-            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-            popd
-                
+                | tee ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
+            
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of the project folder
       # ----------------------------------------------------------------
@@ -180,16 +179,15 @@ jobs:
       # Build executable for a specific target compiler pair
       # ----------------------------------------------------------------
       - name: CI build run 01
+        working-directory: ./      
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --update-rte --packs --context \
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-            pushd ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/
-            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-            popd
-
+                | tee ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
+            
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of the project folder
       # ----------------------------------------------------------------
@@ -264,16 +262,14 @@ jobs:
       # Build executable for a specific target compiler pair
       # ----------------------------------------------------------------
       - name: CI build run 01
+        working-directory: ./      
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --update-rte --packs --context \
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-            pushd ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/
-            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-            popd
-
+                | tee ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
                 
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of the project folder
@@ -347,15 +343,14 @@ jobs:
       # Build executable for a specific target compiler pair
       # ----------------------------------------------------------------
       - name: CI build run 01
+        working-directory: ./      
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --update-rte --packs --context \
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-            pushd ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/
-            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./${{ matrix.compiler.name }}
-            popd
+                | tee ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of the project folder
