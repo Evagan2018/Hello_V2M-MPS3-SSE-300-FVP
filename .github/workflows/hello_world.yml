@@ -104,7 +104,7 @@ jobs:
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
                 | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-            pushd ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}
+            pushd ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
             popd
                 
@@ -186,7 +186,7 @@ jobs:
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
                 | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-            pushd ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}
+            pushd ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
             popd
 
@@ -270,7 +270,7 @@ jobs:
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
                 | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-            pushd ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}
+            pushd ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
             popd
 
@@ -353,8 +353,8 @@ jobs:
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
                 | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-            pushd ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}
-            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            pushd ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/
+            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./${{ matrix.compiler.name }}
             popd
 
       # ----------------------------------------------------------------
