@@ -103,8 +103,11 @@ jobs:
             cbuild hello_world.csolution.yml --update-rte --packs --context \
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-
+                | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            pushd ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}
+            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            popd
+                
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of the project folder
       # ----------------------------------------------------------------
@@ -182,7 +185,10 @@ jobs:
             cbuild hello_world.csolution.yml --update-rte --packs --context \
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+                | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            pushd ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}
+            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            popd
 
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of the project folder
@@ -263,8 +269,12 @@ jobs:
             cbuild hello_world.csolution.yml --update-rte --packs --context \
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+                | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            pushd ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}
+            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            popd
 
+                
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of the project folder
       # ----------------------------------------------------------------
@@ -281,9 +291,6 @@ jobs:
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-
-
-
 
 
   build_GCC_Debug:
@@ -345,7 +352,10 @@ jobs:
             cbuild hello_world.csolution.yml --update-rte --packs --context \
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+                | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            pushd ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}
+            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            popd
 
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of the project folder
@@ -363,7 +373,6 @@ jobs:
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-
 
 
   ci_execute_builds:
