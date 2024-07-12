@@ -1,4 +1,4 @@
-name: Simple Hello World example 
+name: Hello World example. Matrix and 4 parallel build jobs.
 
 on:
   workflow_dispatch:
@@ -432,7 +432,7 @@ jobs:
       # ----------------------------------------------------------------
       # Download previous generated executables
       # ----------------------------------------------------------------
-      - name: Download built folders ⏬
+      - name: Download ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ⏬
         uses: actions/download-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
@@ -454,12 +454,12 @@ jobs:
 
 
       # ----------------------------------------------------------------
-      # Diagnosis: Show the directory structure of ./out folder
+      # Diagnosis: Show the directory structure of artifacts folder
       # ----------------------------------------------------------------
-      - name: CI execute builds msg 03
+      - name: Show artifacts folder
         run: |
-          echo "CI execute builds msg 03"
-
+          echo "Show artifacts folder"
+          tree artifacts
 
 
 

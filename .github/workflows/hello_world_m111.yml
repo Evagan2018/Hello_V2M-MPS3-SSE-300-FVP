@@ -1,4 +1,4 @@
-name: Simple Hello World example
+name: Hello World example. Matrix and 3 sequential jobs.
 
 on:
   workflow_dispatch:
