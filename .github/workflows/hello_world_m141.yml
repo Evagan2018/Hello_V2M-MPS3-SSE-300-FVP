@@ -179,7 +179,7 @@ jobs:
       # Build executable for a specific target compiler pair
       # ----------------------------------------------------------------
       - name: CI build run 01
-        working-directory: ./      
+        working-directory: ./
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --update-rte --packs --context \
@@ -428,6 +428,13 @@ jobs:
       - name: Activate Arm tool license
         uses: ARM-software/cmsis-actions/armlm@v1      
 
+      # ----------------------------------------------------------------
+      # Create artifact directory
+      # ----------------------------------------------------------------
+      - name: Create artifact directory
+        working-directory: ./
+        run: |
+          mkdir artifact
 
       # ----------------------------------------------------------------
       # Download previous generated executables
@@ -436,7 +443,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-          path: artificats
+          path: artificat
 
       # ----------------------------------------------------------------
       # Execute the previous generated context on a model
@@ -452,22 +459,11 @@ jobs:
         run: |
           echo "CI execute builds msg 02"
 
-
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of artifacts folder
       # ----------------------------------------------------------------
-      - name: Show artifacts folder
+      - name: Show artifact folder
+        working-directory: ./
         run: |
-          echo "Show artifacts folder"
-          tree artifacts
-
-
-
-
-
-
-
-
-
-
-
+          echo "Show artifact folder"
+          tree artifact
