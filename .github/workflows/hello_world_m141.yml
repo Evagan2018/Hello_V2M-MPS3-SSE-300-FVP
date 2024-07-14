@@ -429,21 +429,13 @@ jobs:
         uses: ARM-software/cmsis-actions/armlm@v1      
 
       # ----------------------------------------------------------------
-      # Create artifact directory
-      # ----------------------------------------------------------------
-      - name: Create artifact directory
-        working-directory: ./
-        run: |
-          mkdir artifact
-
-      # ----------------------------------------------------------------
       # Download previous generated executables
       # ----------------------------------------------------------------
       - name: Download ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ⏬
         uses: actions/download-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-          path: artificat
+          path: artifact
 
       # ----------------------------------------------------------------
       # Execute the previous generated context on a model
@@ -466,4 +458,4 @@ jobs:
         working-directory: ./
         run: |
           echo "Show artifact folder"
-          tree
+          tree artifact
