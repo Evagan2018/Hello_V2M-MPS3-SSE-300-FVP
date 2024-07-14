@@ -429,13 +429,29 @@ jobs:
         uses: ARM-software/cmsis-actions/armlm@v1      
 
       # ----------------------------------------------------------------
+      # Create artifact directory
+      # ----------------------------------------------------------------        
+      - name: Create artifact directory
+        working-directory: ./
+        run: |
+          mkdir -p artifact
+
+      # ----------------------------------------------------------------
       # Download previous generated executables
       # ----------------------------------------------------------------
       - name: Download ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ⏬
         uses: actions/download-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-          path: artifact
+          path: tmp
+
+      # ----------------------------------------------------------------
+      # Move downloaded exectuables to the artifact folder
+      # ----------------------------------------------------------------
+      - name: Move downloaded artifacts
+        working-directory: ./
+        run: |        
+          mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
       # ----------------------------------------------------------------
       # Execute the previous generated context on a model
