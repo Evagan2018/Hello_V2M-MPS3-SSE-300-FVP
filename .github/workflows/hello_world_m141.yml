@@ -462,8 +462,8 @@ jobs:
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of artifacts folder
       # ----------------------------------------------------------------
-      - name: Show artifact folder
+      - name: Show folder
         working-directory: ./
         run: |
           echo "Show artifact folder"
-          tree artifact
+          tree
