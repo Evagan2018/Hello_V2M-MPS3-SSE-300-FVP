@@ -183,7 +183,7 @@ jobs:
       - name: Download built folders ⏬
         uses: actions/download-artifact@v4
         with:
-          name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.clog
+          name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: artificats
 
       # ----------------------------------------------------------------
