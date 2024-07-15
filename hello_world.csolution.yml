@@ -20,8 +20,43 @@ solution:
     - pack: ARM::CMSIS-Compiler@2.1.0
     - pack: ARM::TFM@2.1.0
     - pack: ARM::V2M_MPS3_SSE_300_TFM-PF@1.0.0
+    - pack: Keil::V2M-MPS2_CMx_BSP@1.8.1    
+    - pack: Keil::V2M-MPS2_IOTKit_BSP@1.5.1    
 
   target-types:
+
+    - type: CMSDK_CM0_VHT
+      device: ARM::CMSDK_CM0_VHT
+
+    - type: CMSDK_CM0plus_VHT
+      device: ARM::CMSDK_CM0plus_VHT
+
+    - type: CMSDK_CM3_VHT 
+      device: ARM::CMSDK_CM3_VHT 
+
+    - type: CMSDK_CM4_FP_VHT
+      device: ARM::CMSDK_CM4_FP_VHT
+
+    - type: CMSDK_CM4_VHT  
+      device: ARM::CMSDK_CM4_VHT  
+
+    - type: CMSDK_CM7_DP_VHT
+      device: ARM::CMSDK_CM7_DP_VHT
+
+    - type: CMSDK_CM7_SP_VHT
+      device: ARM::CMSDK_CM7_SP_VHT
+
+    - type: CMSDK_CM7_VHT  
+      device: ARM::CMSDK_CM7_VHT  
+
+    - type: IOTKit_CM23_VHT
+      device: ARM::IOTKit_CM23_VHT
+
+    - type: IOTKit_CM33_FP_VHT
+      device: ARM::IOTKit_CM33_FP_VHT
+
+    - type: IOTKit_CM33_VHT
+      device: ARM::IOTKit_CM33_VHT
 
     - type: ARMCM0                                    # Builds with: AC6, GCC
       device: ARM::ARMCM0

@@ -30,15 +30,24 @@ jobs:
         ]
 
         target: [
-          {type: ARMCM0,   model: tbd,  board: tbd},           
-          {type: ARMCM0,   model: tbd,  board: tbd}, 
-          {type: ARMCM0P,  model: tbd,  board: tbd}, 
-          {type: ARMCM1,   model: tbd,  board: tbd}, 
-          {type: ARMCM3,   model: tbd,  board: tbd}, 
-          {type: ARMCM55,  model: tbd,  board: tbd}, 
-          {type: ARMCM85,  model: tbd,  board: tbd}
+          {type: CMSDK_CM0_VHT,        model: tbd,  board: tbd}, 
+          {type: CMSDK_CM0plus_VHT,    model: tbd,  board: tbd}, 
+          {type: CMSDK_CM3_VHT,        model: tbd,  board: tbd}, 
+          {type: CMSDK_CM4_VHT,        model: tbd,  board: tbd}, 
+          {type: CMSDK_CM4_FP_VHT,     model: tbd,  board: tbd}, 
+          {type: CMSDK_CM7_VHT,        model: tbd,  board: tbd}, 
+          {type: CMSDK_CM7_SP_VHT,     model: tbd,  board: tbd}, 
+          {type: IOTKit_CM23_VHT,      model: tbd,  board: tbd}, 
+          {type: IOTKit_CM33_FP_VHT,   model: tbd,  board: tbd}, 
+          {type: IOTKit_CM33_FP_VHT,   model: tbd,  board: tbd}, 
+          {type: ARMCM0,               model: tbd,  board: tbd}, 
+          {type: ARMCM0P,              model: tbd,  board: tbd}, 
+          {type: ARMCM1,               model: tbd,  board: tbd}, 
+          {type: ARMCM3,               model: tbd,  board: tbd}, 
+          {type: ARMCM55,              model: tbd,  board: tbd}, 
+          {type: ARMCM85,              model: tbd,  board: tbd}
         ]
-
+ 
         build: [ 
           {type: Release},
           {type: Debug}
@@ -75,6 +84,7 @@ jobs:
       # ----------------------------------------------------------------
       - name: Build executable
         if: always()      
+        continue-on-error: true
         working-directory: ./
         # Remark regarding the build log redirection (tee command). Do not redirect the build log to the ./out/hello_world/ folder.
         # This folder is currently used by the cbuild process. Access operations to this folder during the build operations will throws errors.
@@ -91,7 +101,8 @@ jobs:
       # Diagnosis: Show the directory structure of the project folder
       # ----------------------------------------------------------------
       - name: Show project folder
-        if: always()      
+        if: always()
+        continue-on-error: true
         run: |
           echo "Diagnosis: Show the directory structure of the project output folder"
           tree ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
@@ -100,7 +111,8 @@ jobs:
       # Upload build log
       # ----------------------------------------------------------------
       - name: Upload build log
-        if: always()      
+        if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
@@ -110,7 +122,8 @@ jobs:
       # Create artifact directory
       # ----------------------------------------------------------------        
       - name: Create artifact directory
-        if: always()      
+        if: always()
+        continue-on-error: true
         working-directory: ./
         run: |
           mkdir -p artifact
@@ -120,6 +133,7 @@ jobs:
       # ----------------------------------------------------------------
       - name: Download ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ⏬
         if: always()
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
@@ -129,7 +143,8 @@ jobs:
       # Move downloaded exectuables to the artifact folder
       # ----------------------------------------------------------------
       - name: Move downloaded artifacts
-        if: always()      
+        if: always()
+        continue-on-error: true
         working-directory: ./
         run: |        
           mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
@@ -138,7 +153,8 @@ jobs:
       # Diagnosis: Show the directory structure of artifacts folder
       # ----------------------------------------------------------------
       - name: Show downloaded artifacts
-        if: always()      
+        if: always()
+        continue-on-error: true
         working-directory: ./
         run: |
           echo "Show artifact folder"
