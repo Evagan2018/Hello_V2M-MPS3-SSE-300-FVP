@@ -98,15 +98,13 @@ jobs:
       # Build executable for a specific target compiler pair
       # ----------------------------------------------------------------
       - name: CI build run 01
-        working-directory: ./
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --update-rte --packs --context \
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
-            
+                | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of the project folder
       # ----------------------------------------------------------------
@@ -123,6 +121,7 @@ jobs:
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+
 
 
   build_AC6_Debug:
@@ -179,15 +178,13 @@ jobs:
       # Build executable for a specific target compiler pair
       # ----------------------------------------------------------------
       - name: CI build run 01
-        working-directory: ./      
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --update-rte --packs --context \
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
-            
+                | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of the project folder
       # ----------------------------------------------------------------
@@ -204,8 +201,6 @@ jobs:
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-
-
 
   build_GCC_Release:
   
@@ -262,15 +257,13 @@ jobs:
       # Build executable for a specific target compiler pair
       # ----------------------------------------------------------------
       - name: CI build run 01
-        working-directory: ./      
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --update-rte --packs --context \
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
-                
+                | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of the project folder
       # ----------------------------------------------------------------
@@ -287,6 +280,9 @@ jobs:
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+
+
+
 
 
   build_GCC_Debug:
@@ -343,14 +339,12 @@ jobs:
       # Build executable for a specific target compiler pair
       # ----------------------------------------------------------------
       - name: CI build run 01
-        working-directory: ./      
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --update-rte --packs --context \
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
+                | tee ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of the project folder
@@ -370,13 +364,15 @@ jobs:
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
 
+
+
   ci_execute_builds:
     needs: [
-      install,
-      build_AC6_Release,
-      build_AC6_Debug,
-      build_GCC_Release,
-      build_GCC_Debug
+      {install},
+      {build_AC6_Release},
+      {build_AC6_Debug},
+      {build_GCC_Release},
+      {build_GCC_Debug}
     ]
 
     strategy:
