@@ -1,4 +1,4 @@
-name: Simple Hello World example 
+name: Hello World example (1 job with sequential step execution)
 
 on:
   workflow_dispatch:
@@ -37,8 +37,9 @@ jobs:
           {type: CMSDK_CM4_FP_VHT,     model: tbd,  board: tbd}, 
           {type: CMSDK_CM7_VHT,        model: tbd,  board: tbd}, 
           {type: CMSDK_CM7_SP_VHT,     model: tbd,  board: tbd}, 
+          {type: CMSDK_CM7_DP_VHT,     model: tbd,  board: tbd}, 
           {type: IOTKit_CM23_VHT,      model: tbd,  board: tbd}, 
-          {type: IOTKit_CM33_FP_VHT,   model: tbd,  board: tbd}, 
+          {type: IOTKit_CM33_VHT,      model: tbd,  board: tbd}, 
           {type: IOTKit_CM33_FP_VHT,   model: tbd,  board: tbd}, 
           {type: ARMCM0,               model: tbd,  board: tbd}, 
           {type: ARMCM0P,              model: tbd,  board: tbd}, 

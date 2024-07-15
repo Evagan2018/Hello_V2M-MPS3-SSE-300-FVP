@@ -61,8 +61,9 @@ jobs:
           {type: CMSDK_CM4_FP_VHT,     model: tbd,  board: tbd}, 
           {type: CMSDK_CM7_VHT,        model: tbd,  board: tbd}, 
           {type: CMSDK_CM7_SP_VHT,     model: tbd,  board: tbd}, 
+          {type: CMSDK_CM7_DP_VHT,     model: tbd,  board: tbd}, 
           {type: IOTKit_CM23_VHT,      model: tbd,  board: tbd}, 
-          {type: IOTKit_CM33_FP_VHT,   model: tbd,  board: tbd}, 
+          {type: IOTKit_CM33_VHT,      model: tbd,  board: tbd}, 
           {type: IOTKit_CM33_FP_VHT,   model: tbd,  board: tbd}, 
           {type: ARMCM0,               model: tbd,  board: tbd}, 
           {type: ARMCM0P,              model: tbd,  board: tbd}, 
@@ -159,8 +160,9 @@ jobs:
           {type: CMSDK_CM4_FP_VHT,     model: tbd,  board: tbd}, 
           {type: CMSDK_CM7_VHT,        model: tbd,  board: tbd}, 
           {type: CMSDK_CM7_SP_VHT,     model: tbd,  board: tbd}, 
+          {type: CMSDK_CM7_DP_VHT,     model: tbd,  board: tbd}, 
           {type: IOTKit_CM23_VHT,      model: tbd,  board: tbd}, 
-          {type: IOTKit_CM33_FP_VHT,   model: tbd,  board: tbd}, 
+          {type: IOTKit_CM33_VHT,      model: tbd,  board: tbd}, 
           {type: IOTKit_CM33_FP_VHT,   model: tbd,  board: tbd}, 
           {type: ARMCM0,               model: tbd,  board: tbd}, 
           {type: ARMCM0P,              model: tbd,  board: tbd}, 
@@ -231,6 +233,8 @@ jobs:
       # Upload build log
       # ----------------------------------------------------------------
       - name: Upload build log
+        if: always()
+        continue-on-error: true      
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
@@ -256,8 +260,9 @@ jobs:
           {type: CMSDK_CM4_FP_VHT,     model: tbd,  board: tbd}, 
           {type: CMSDK_CM7_VHT,        model: tbd,  board: tbd}, 
           {type: CMSDK_CM7_SP_VHT,     model: tbd,  board: tbd}, 
+          {type: CMSDK_CM7_DP_VHT,     model: tbd,  board: tbd}, 
           {type: IOTKit_CM23_VHT,      model: tbd,  board: tbd}, 
-          {type: IOTKit_CM33_FP_VHT,   model: tbd,  board: tbd}, 
+          {type: IOTKit_CM33_VHT,      model: tbd,  board: tbd}, 
           {type: IOTKit_CM33_FP_VHT,   model: tbd,  board: tbd}, 
           {type: ARMCM0,               model: tbd,  board: tbd}, 
           {type: ARMCM0P,              model: tbd,  board: tbd}, 
@@ -328,6 +333,8 @@ jobs:
       # Upload build log
       # ----------------------------------------------------------------
       - name: Upload build log
+        if: always()
+        continue-on-error: true      
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
@@ -351,8 +358,9 @@ jobs:
           {type: CMSDK_CM4_FP_VHT,     model: tbd,  board: tbd}, 
           {type: CMSDK_CM7_VHT,        model: tbd,  board: tbd}, 
           {type: CMSDK_CM7_SP_VHT,     model: tbd,  board: tbd}, 
+          {type: CMSDK_CM7_DP_VHT,     model: tbd,  board: tbd}, 
           {type: IOTKit_CM23_VHT,      model: tbd,  board: tbd}, 
-          {type: IOTKit_CM33_FP_VHT,   model: tbd,  board: tbd}, 
+          {type: IOTKit_CM33_VHT,      model: tbd,  board: tbd}, 
           {type: IOTKit_CM33_FP_VHT,   model: tbd,  board: tbd}, 
           {type: ARMCM0,               model: tbd,  board: tbd}, 
           {type: ARMCM0P,              model: tbd,  board: tbd}, 
@@ -413,6 +421,8 @@ jobs:
       # Diagnosis: Show the directory structure of the project folder
       # ----------------------------------------------------------------
       - name: Show project folder
+        if: always()
+        continue-on-error: true      
         run: |
           echo "Diagnosis: Show the directory structure of the project output folder"
           tree ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
@@ -421,6 +431,8 @@ jobs:
       # Upload build log
       # ----------------------------------------------------------------
       - name: Upload build log
+        if: always()
+        continue-on-error: true      
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
@@ -452,8 +464,9 @@ jobs:
           {type: CMSDK_CM4_FP_VHT,     model: tbd,  board: tbd}, 
           {type: CMSDK_CM7_VHT,        model: tbd,  board: tbd}, 
           {type: CMSDK_CM7_SP_VHT,     model: tbd,  board: tbd}, 
+          {type: CMSDK_CM7_DP_VHT,     model: tbd,  board: tbd}, 
           {type: IOTKit_CM23_VHT,      model: tbd,  board: tbd}, 
-          {type: IOTKit_CM33_FP_VHT,   model: tbd,  board: tbd}, 
+          {type: IOTKit_CM33_VHT,      model: tbd,  board: tbd}, 
           {type: IOTKit_CM33_FP_VHT,   model: tbd,  board: tbd}, 
           {type: ARMCM0,               model: tbd,  board: tbd}, 
           {type: ARMCM0P,              model: tbd,  board: tbd}, 
@@ -499,6 +512,8 @@ jobs:
       # Create artifact directory
       # ----------------------------------------------------------------        
       - name: Create artifact directory
+        if: always()
+        continue-on-error: true      
         working-directory: ./
         run: |
           mkdir -p artifact

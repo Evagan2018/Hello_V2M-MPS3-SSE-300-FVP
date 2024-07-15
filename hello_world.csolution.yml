@@ -8,20 +8,18 @@ solution:
   # List the packs that define the device and/or board.
   packs:
     - pack: ARM::CMSIS@6.1.0
+    - pack: ARM::CMSIS-RTX@5.9.0
+    - pack: ARM::CMSIS-Compiler@2.1.0
+    - pack: ARM::Cortex_DFP@1.1.0
+    - pack: Keil::V2M-MPS2_CMx_BSP@1.8.1
+    - pack: Keil::V2M-MPS2_IOTKit_BSP@1.5.1
     - pack: ARM::V2M-MPS3_SSE_200_BSP@1.0.0
     - pack: ARM::V2M_MPS3_SSE_300_BSP@1.5.0
     - pack: ARM::V2M_MPS3_SSE_300_BSP@1.1.0
     - pack: ARM::V2M_MPS3_SSE_310_BSP@1.4.0
+    - pack: ARM::V2M-MPS2_SSE_200_BSP@2.0.0
+    - pack: ARM::V2M-MPS3_SSE_200_BSP@1.0.0
     - pack: ARM::SSE_315_BSP@1.0.0
-    - pack: ARM::Cortex_DFP@1.1.0
-    - pack: ARM::V2M-MPS2_SSE_200_BSP@2.0.0 
-    - pack: ARM::V2M-MPS3_SSE_200_BSP@1.0.0 
-    - pack: ARM::CMSIS-RTX@5.9.0
-    - pack: ARM::CMSIS-Compiler@2.1.0
-    - pack: ARM::TFM@2.1.0
-    - pack: ARM::V2M_MPS3_SSE_300_TFM-PF@1.0.0
-    - pack: Keil::V2M-MPS2_CMx_BSP@1.8.1    
-    - pack: Keil::V2M-MPS2_IOTKit_BSP@1.5.1    
 
   target-types:
 
@@ -37,7 +35,7 @@ solution:
     - type: CMSDK_CM4_FP_VHT
       device: ARM::CMSDK_CM4_FP_VHT
 
-    - type: CMSDK_CM4_VHT  
+    - type: CMSDK_CM4_VHT
       device: ARM::CMSDK_CM4_VHT  
 
     - type: CMSDK_CM7_DP_VHT
@@ -47,7 +45,7 @@ solution:
       device: ARM::CMSDK_CM7_SP_VHT
 
     - type: CMSDK_CM7_VHT  
-      device: ARM::CMSDK_CM7_VHT  
+      device: ARM::CMSDK_CM7_VHT
 
     - type: IOTKit_CM23_VHT
       device: ARM::IOTKit_CM23_VHT
