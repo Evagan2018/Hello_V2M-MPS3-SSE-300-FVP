@@ -97,7 +97,7 @@ jobs:
       # ----------------------------------------------------------------
       # Build executable for a specific target compiler pair
       # ----------------------------------------------------------------
-      - name: CI build run 01
+      - name: Build executable
         working-directory: ./
         run: |
             echo "Build executable for a specific target compiler pair "
@@ -110,7 +110,7 @@ jobs:
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of the project folder
       # ----------------------------------------------------------------
-      - name: CI build run 02
+      - name: Show project folder
         run: |
           echo "Diagnosis: Show the directory structure of the project output folder"
           tree ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
@@ -118,7 +118,7 @@ jobs:
       # ----------------------------------------------------------------
       # Upload build log
       # ----------------------------------------------------------------
-      - name: CI build run 03
+      - name: Upload build log
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
@@ -178,7 +178,7 @@ jobs:
       # ----------------------------------------------------------------
       # Build executable for a specific target compiler pair
       # ----------------------------------------------------------------
-      - name: CI build run 01
+      - name: Build executable
         working-directory: ./
         run: |
             echo "Build executable for a specific target compiler pair "
@@ -191,7 +191,7 @@ jobs:
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of the project folder
       # ----------------------------------------------------------------
-      - name: CI build run 02
+      - name: Show project folder
         run: |
           echo "Diagnosis: Show the directory structure of the project output folder"
           tree ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
@@ -199,7 +199,7 @@ jobs:
       # ----------------------------------------------------------------
       # Upload build log
       # ----------------------------------------------------------------
-      - name: CI build run 03
+      - name: Upload build log
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
@@ -261,7 +261,7 @@ jobs:
       # ----------------------------------------------------------------
       # Build executable for a specific target compiler pair
       # ----------------------------------------------------------------
-      - name: CI build run 01
+      - name: Build executable
         working-directory: ./      
         run: |
             echo "Build executable for a specific target compiler pair "
@@ -274,7 +274,7 @@ jobs:
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of the project folder
       # ----------------------------------------------------------------
-      - name: CI build run 02
+      - name: Show project folder
         run: |
           echo "Diagnosis: Show the directory structure of the project output folder"
           tree ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
@@ -282,7 +282,7 @@ jobs:
       # ----------------------------------------------------------------
       # Upload build log
       # ----------------------------------------------------------------
-      - name: CI build run 03
+      - name: Upload build log
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
@@ -342,7 +342,7 @@ jobs:
       # ----------------------------------------------------------------
       # Build executable for a specific target compiler pair
       # ----------------------------------------------------------------
-      - name: CI build run 01
+      - name: Build executable
         working-directory: ./      
         run: |
             echo "Build executable for a specific target compiler pair "
@@ -355,7 +355,7 @@ jobs:
       # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of the project folder
       # ----------------------------------------------------------------
-      - name: CI build run 02
+      - name: Show project folder
         run: |
           echo "Diagnosis: Show the directory structure of the project output folder"
           tree ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
@@ -363,7 +363,7 @@ jobs:
       # ----------------------------------------------------------------
       # Upload build log
       # ----------------------------------------------------------------
-      - name: CI build run 03
+      - name: Upload build log
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
@@ -454,23 +454,9 @@ jobs:
           mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
       # ----------------------------------------------------------------
-      # Execute the previous generated context on a model
-      # ----------------------------------------------------------------
-      - name: CI execute builds msg 01
-        run: |
-          echo "CI execute builds msg 01"
-
-      # ----------------------------------------------------------------
-      # Upload FVP simulation results
-      # ----------------------------------------------------------------
-      - name: CI execute builds msg 02
-        run: |
-          echo "CI execute builds msg 02"
-
-      # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of artifacts folder
       # ----------------------------------------------------------------
-      - name: Show folder
+      - name: Show downloaded artifacts
         working-directory: ./
         run: |
           echo "Show artifact folder"
