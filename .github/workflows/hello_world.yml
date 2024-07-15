@@ -368,11 +368,11 @@ jobs:
 
   ci_execute_builds:
     needs: [
-      {install},
-      {build_AC6_Release},
-      {build_AC6_Debug},
-      {build_GCC_Release},
-      {build_GCC_Debug}
+      install,
+      build_AC6_Release,
+      build_AC6_Debug,
+      build_GCC_Release,
+      build_GCC_Debug
     ]
 
     strategy:
