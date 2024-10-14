@@ -1,9 +1,10 @@
 solution:
   description: Simple Hello World example for different cores
-  created-for: CMSIS-Toolbox@2.4.0
+  created-for: CMSIS-Toolbox@2.6.0
 
   # Use default setup of toolchain specific controls.
-  cdefault: 
+  cdefault: ./cdefault.yml
+
 
   # List the packs that define the device and/or board.
   packs:
@@ -167,7 +168,7 @@ solution:
   build-types:
     - type: Debug
       debug: on
-      optimize: none
+      optimize: debug
 
     - type: Release
       debug: off

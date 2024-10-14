@@ -92,7 +92,7 @@ jobs:
         # The build process creates in ./out/hello_world/ the following subdirectory structure:  /target_type/build_type/compiler_name/
         run: |
             echo "Build executable for a specific target compiler pair "
-            cbuild hello_world.csolution.yml --update-rte --packs --context \
+            cbuild hello_world.csolution.yml --packs --context \
                 hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} -r \
                 | tee ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log

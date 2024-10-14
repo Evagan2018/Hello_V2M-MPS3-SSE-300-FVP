@@ -27,6 +27,7 @@ default:
         - -std=gnu11
         - -Wno-license-management
       C-CPP:
+        - -fno-common -fdata-sections -ffreestanding -fno-builtin -mthumb
         - -Wno-documentation
         - -Wno-documentation-unknown-command
         - -Wno-license-management
@@ -46,10 +47,9 @@ default:
         - -fshort-wchar
         - -ffunction-sections
         - -Wno-sign-conversion
-        - -Wmacro-redefined
-      CPP:
-        - -xc++
-        - -std=c++14
+        - -std=c99
+        - -Wno-macro-redefined
+        - -Wno-pragma-pack
       ASM:
         - -masm=auto
       Link:
