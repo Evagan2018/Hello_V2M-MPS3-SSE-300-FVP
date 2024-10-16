@@ -1,4 +1,37 @@
 cbuild-set:
-  generated-by: csolution version 2.2.1
+  generated-by: csolution version 2.6.0
   contexts:
-    - context: hello.Debug+V2M-MPS3-SSE-300-FVP
+    - context: hello_world.Release+CMSDK_CM0_VHT
+    - context: hello_world.Release+CMSDK_CM0plus_VHT
+    - context: hello_world.Release+CMSDK_CM3_VHT
+    - context: hello_world.Release+CMSDK_CM4_VHT
+    - context: hello_world.Release+CMSDK_CM4_FP_VHT
+    - context: hello_world.Release+CMSDK_CM7_VHT
+    - context: hello_world.Release+CMSDK_CM7_SP_VHT
+    - context: hello_world.Release+CMSDK_CM7_DP_VHT
+    - context: hello_world.Release+IOTKit_CM23_VHT
+    - context: hello_world.Release+IOTKit_CM33_VHT
+    - context: hello_world.Release+IOTKit_CM33_FP_VHT
+    - context: hello_world.Release+ARMCM0
+    - context: hello_world.Release+ARMCM0P
+    - context: hello_world.Release+ARMCM1
+    - context: hello_world.Release+ARMCM3
+    - context: hello_world.Release+ARMCM55
+    - context: hello_world.Release+ARMCM85
+    - context: hello_world.Debug+CMSDK_CM0_VHT
+    - context: hello_world.Debug+CMSDK_CM0plus_VHT
+    - context: hello_world.Debug+CMSDK_CM3_VHT
+    - context: hello_world.Debug+CMSDK_CM4_VHT
+    - context: hello_world.Debug+CMSDK_CM4_FP_VHT
+    - context: hello_world.Debug+CMSDK_CM7_VHT
+    - context: hello_world.Debug+CMSDK_CM7_SP_VHT
+    - context: hello_world.Debug+CMSDK_CM7_DP_VHT
+    - context: hello_world.Debug+IOTKit_CM23_VHT
+    - context: hello_world.Debug+IOTKit_CM33_VHT
+    - context: hello_world.Debug+IOTKit_CM33_FP_VHT
+    - context: hello_world.Debug+ARMCM0
+    - context: hello_world.Debug+ARMCM0P
+    - context: hello_world.Debug+ARMCM1
+    - context: hello_world.Debug+ARMCM3
+    - context: hello_world.Debug+ARMCM55
+    - context: hello_world.Debug+ARMCM85
