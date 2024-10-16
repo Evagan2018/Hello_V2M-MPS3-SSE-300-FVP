@@ -28,9 +28,6 @@ project:
       for-context:
       - +SSE-315-FVP___Corstone_315
 
-  add-path:
-    - .
-
   setups:
     - setup: SSE-300
       for-context: 
@@ -54,9 +51,6 @@ project:
     -  script: ./RTE/Device/SSE-300-MPS3/fvp_sse300_mps3_s.sct
        for-compiler: AC6
 
-
-  rte: 
-    base-dir: RTE_Base_$TargetType$/$Compiler$ 
 
   components:
 
