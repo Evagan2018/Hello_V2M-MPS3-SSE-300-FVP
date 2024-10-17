@@ -21,22 +21,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:  
 
-      # ----------------------------------------------------------------
       # Setup required toolchains and license
-      # ----------------------------------------------------------------
 
       # https://github.com/actions/checkout
-      - name: Checkout 🛎️
+      - name: Checkout
         uses: actions/checkout@v4
 
       # https://github.com/actions/setup-python
-      - name: Setup Python 3.9 📦
+      - name: Setup Python 3.9
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
       # https://github.com/ARM-software/cmsis-actions
-      - name: Activate vcpkg 🎁
+      - name: Activate vcpkg
         uses: ARM-software/cmsis-actions/vcpkg@v1
 
       # https://github.com/ARM-software/cmsis-actions
@@ -47,6 +45,7 @@ jobs:
   build_AC6_Release:
     needs: [install]
     strategy:
+      fail-fast: false      
       matrix:
 
         compiler: [ 
@@ -83,60 +82,52 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ----------------------------------------------------------------
       # Setup required toolchains and license
-      # ----------------------------------------------------------------
 
       # https://github.com/actions/checkout
-      - name: Checkout 🛎️
+      - name: Checkout
         uses: actions/checkout@v4
 
       # https://github.com/actions/setup-python
-      - name: Setup Python 3.9 📦
+      - name: Setup Python 3.9
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
       # https://github.com/ARM-software/cmsis-actions
-      - name: Activate vcpkg 🎁
+      - name: Activate vcpkg
         uses: ARM-software/cmsis-actions/vcpkg@v1
 
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate Arm tool license
         uses: ARM-software/cmsis-actions/armlm@v1
 
-
-      # ----------------------------------------------------------------
       # Build executable for a specific target compiler pair
-      # ----------------------------------------------------------------
       - name: Build executable
-        if: always()
-        continue-on-error: true
         working-directory: ./
         run: |
             echo "Build executable for a specific target compiler pair "
-            cbuild hello_world.csolution.yml --update-rte --packs --context \
-                hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
-                --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            cbuild hello_world.csolution.yml --packs --verbose \
+                --context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
+                --toolchain ${{ matrix.compiler.name }} --rebuild \
+                --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
-            
-      # ----------------------------------------------------------------
+
+            if [ $? -eq 0 ]; then
+               echo "Build succeeded"
+            else 
+               echo "Build failed"
+               exit 1
+            fi     
+
       # Diagnosis: Show the directory structure of the project folder
-      # ----------------------------------------------------------------
       - name: Show project folder
-        if: always()
-        continue-on-error: true
         run: |
           echo "Diagnosis: Show the directory structure of the project output folder"
           tree ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
-      # ----------------------------------------------------------------
       # Upload build log
-      # ----------------------------------------------------------------
       - name: Upload build log
-        if: always()
-        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
@@ -146,6 +137,7 @@ jobs:
   build_AC6_Debug:
     needs: [install]
     strategy:
+      fail-fast: false
       matrix:
 
         compiler: [ 
@@ -181,57 +173,51 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ----------------------------------------------------------------
       # Setup required toolchains and license
-      # ----------------------------------------------------------------
 
       # https://github.com/actions/checkout
-      - name: Checkout 🛎️
+      - name: Checkout
         uses: actions/checkout@v4
 
       # https://github.com/actions/setup-python
-      - name: Setup Python 3.9 📦
+      - name: Setup Python 3.9
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
       # https://github.com/ARM-software/cmsis-actions
-      - name: Activate vcpkg 🎁
+      - name: Activate vcpkg
         uses: ARM-software/cmsis-actions/vcpkg@v1
 
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate Arm tool license
         uses: ARM-software/cmsis-actions/armlm@v1
 
-
-      # ----------------------------------------------------------------
       # Build executable for a specific target compiler pair
-      # ----------------------------------------------------------------
       - name: Build executable
-        if: always()
-        continue-on-error: true
         working-directory: ./
         run: |
             echo "Build executable for a specific target compiler pair "
-            cbuild hello_world.csolution.yml --update-rte --packs --context \
-                hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
-                --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            cbuild hello_world.csolution.yml --packs --verbose \
+                --context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
+                --toolchain ${{ matrix.compiler.name }} --rebuild \
+                --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
-            
-      # ----------------------------------------------------------------
+
+            if [ $? -eq 0 ]; then
+               echo "Build succeeded"
+            else 
+               echo "Build failed"
+               exit 1
+            fi
+
       # Diagnosis: Show the directory structure of the project folder
-      # ----------------------------------------------------------------
       - name: Show project folder
-        if: always()
-        continue-on-error: true
         run: |
           echo "Diagnosis: Show the directory structure of the project output folder"
           tree ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
-      # ----------------------------------------------------------------
       # Upload build log
-      # ----------------------------------------------------------------
       - name: Upload build log
         if: always()
         continue-on-error: true      
@@ -246,6 +232,7 @@ jobs:
   
     needs: [install]
     strategy:
+      fail-fast: false
       matrix:
 
         compiler: [ 
@@ -281,47 +268,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ----------------------------------------------------------------
       # Setup required toolchains and license
-      # ----------------------------------------------------------------
 
       # https://github.com/actions/checkout
-      - name: Checkout 🛎️
+      - name: Checkout
         uses: actions/checkout@v4
 
       # https://github.com/actions/setup-python
-      - name: Setup Python 3.9 📦
+      - name: Setup Python 3.9
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
       # https://github.com/ARM-software/cmsis-actions
-      - name: Activate vcpkg 🎁
+      - name: Activate vcpkg
         uses: ARM-software/cmsis-actions/vcpkg@v1
 
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate Arm tool license
         uses: ARM-software/cmsis-actions/armlm@v1
 
-
-      # ----------------------------------------------------------------
       # Build executable for a specific target compiler pair
-      # ----------------------------------------------------------------
       - name: Build executable
-        if: always()
-        continue-on-error: true
         working-directory: ./      
         run: |
             echo "Build executable for a specific target compiler pair "
-            cbuild hello_world.csolution.yml --update-rte --packs --context \
-                hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
-                --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            cbuild hello_world.csolution.yml --packs --verbose \
+                --context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
+                --toolchain ${{ matrix.compiler.name }} --rebuild \
+                --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
-                
-      # ----------------------------------------------------------------
+
+            if [ $? -eq 0 ]; then
+               echo "Build succeeded"
+            else 
+               echo "Build failed"
+               exit 1
+            fi
+
       # Diagnosis: Show the directory structure of the project folder
-      # ----------------------------------------------------------------
       - name: Show project folder
         if: always()
         continue-on-error: true
@@ -329,9 +314,7 @@ jobs:
           echo "Diagnosis: Show the directory structure of the project output folder"
           tree ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
-      # ----------------------------------------------------------------
       # Upload build log
-      # ----------------------------------------------------------------
       - name: Upload build log
         if: always()
         continue-on-error: true      
@@ -344,6 +327,7 @@ jobs:
   build_GCC_Debug:
     needs: [install]
     strategy:
+      fail-fast: false
       matrix:
 
         compiler: [ 
@@ -379,47 +363,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ----------------------------------------------------------------
       # Setup required toolchains and license
-      # ----------------------------------------------------------------
 
       # https://github.com/actions/checkout
-      - name: Checkout 🛎️
+      - name: Checkout
         uses: actions/checkout@v4
 
       # https://github.com/actions/setup-python
-      - name: Setup Python 3.9 📦
+      - name: Setup Python 3.9
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
       # https://github.com/ARM-software/cmsis-actions
-      - name: Activate vcpkg 🎁
+      - name: Activate vcpkg
         uses: ARM-software/cmsis-actions/vcpkg@v1
 
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate Arm tool license
         uses: ARM-software/cmsis-actions/armlm@v1
 
-
-      # ----------------------------------------------------------------
       # Build executable for a specific target compiler pair
-      # ----------------------------------------------------------------
       - name: Build executable
-        if: always()
-        continue-on-error: true
         working-directory: ./
         run: |
             echo "Build executable for a specific target compiler pair "
-            cbuild hello_world.csolution.yml --update-rte --packs --context \
-                hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
-                --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            cbuild hello_world.csolution.yml --update-rte --packs --verbose \
+                --context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
+                --toolchain ${{ matrix.compiler.name }} -rebuild \
+                --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
-      # ----------------------------------------------------------------
+            if [ $? -eq 0 ]; then
+               echo "Build succeeded"
+            else 
+               echo "Build failed"
+               exit 1
+            fi
+
       # Diagnosis: Show the directory structure of the project folder
-      # ----------------------------------------------------------------
       - name: Show project folder
         if: always()
         continue-on-error: true      
@@ -427,9 +409,7 @@ jobs:
           echo "Diagnosis: Show the directory structure of the project output folder"
           tree ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
-      # ----------------------------------------------------------------
       # Upload build log
-      # ----------------------------------------------------------------
       - name: Upload build log
         if: always()
         continue-on-error: true      
@@ -437,7 +417,6 @@ jobs:
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-
 
   ci_execute_builds:
     needs: [
@@ -449,6 +428,7 @@ jobs:
     ]
 
     strategy:
+      fail-fast: false
       matrix:
 
         compiler: [ 
@@ -486,31 +466,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ----------------------------------------------------------------
       # Setup required toolchains and license
-      # ----------------------------------------------------------------
 
       # https://github.com/actions/checkout
-      - name: Checkout 🛎️
+      - name: Checkout
         uses: actions/checkout@v4
 
       # https://github.com/actions/setup-python
-      - name: Setup Python 3.9 📦
+      - name: Setup Python 3.9
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
       # https://github.com/ARM-software/cmsis-actions
-      - name: Activate vcpkg 🎁
+      - name: Activate vcpkg
         uses: ARM-software/cmsis-actions/vcpkg@v1
 
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate Arm tool license
         uses: ARM-software/cmsis-actions/armlm@v1      
 
-      # ----------------------------------------------------------------
       # Create artifact directory
-      # ----------------------------------------------------------------        
       - name: Create artifact directory
         if: always()
         continue-on-error: true      
@@ -518,9 +494,7 @@ jobs:
         run: |
           mkdir -p artifact
 
-      # ----------------------------------------------------------------
       # Download previous generated executables
-      # ----------------------------------------------------------------
       - name: Download ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ⏬
         if: always()
         continue-on-error: true
@@ -529,9 +503,7 @@ jobs:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: tmp
 
-      # ----------------------------------------------------------------
       # Move downloaded exectuables to the artifact folder
-      # ----------------------------------------------------------------
       - name: Move downloaded artifacts
         if: always()
         continue-on-error: true
@@ -539,9 +511,7 @@ jobs:
         run: |        
           mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
-      # ----------------------------------------------------------------
       # Diagnosis: Show the directory structure of artifacts folder
-      # ----------------------------------------------------------------
       - name: Show downloaded artifacts
         if: always()
         continue-on-error: true    
