@@ -10,28 +10,21 @@ on:
 
   push:
     branches: [main]
-    paths:    
+    paths:
       - ./**
 
   schedule:
     - cron: '00 22 * * 0'
 
 jobs:
-  install:  
+
+  install:
     runs-on: ubuntu-latest
-    steps:  
-
+    steps:
       # Setup required toolchains and license
-
       # https://github.com/actions/checkout
       - name: Checkout
         uses: actions/checkout@v4
-
-      # https://github.com/actions/setup-python
-      - name: Setup Python 3.9
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
 
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate vcpkg
@@ -45,7 +38,7 @@ jobs:
   build_AC6_Release:
     needs: [install]
     strategy:
-      fail-fast: false      
+      fail-fast: false
       matrix:
 
         compiler: [ 
@@ -83,16 +76,9 @@ jobs:
 
     steps:
       # Setup required toolchains and license
-
       # https://github.com/actions/checkout
       - name: Checkout
         uses: actions/checkout@v4
-
-      # https://github.com/actions/setup-python
-      - name: Setup Python 3.9
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
 
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate vcpkg
@@ -118,13 +104,7 @@ jobs:
             else 
                echo "Build failed"
                exit 1
-            fi     
-
-      # Diagnosis: Show the directory structure of the project folder
-      - name: Show project folder
-        run: |
-          echo "Diagnosis: Show the directory structure of the project output folder"
-          tree ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
+            fi
 
       # Upload build log
       - name: Upload build log
@@ -174,16 +154,9 @@ jobs:
 
     steps:
       # Setup required toolchains and license
-
       # https://github.com/actions/checkout
       - name: Checkout
         uses: actions/checkout@v4
-
-      # https://github.com/actions/setup-python
-      - name: Setup Python 3.9
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
 
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate vcpkg
@@ -211,21 +184,12 @@ jobs:
                exit 1
             fi
 
-      # Diagnosis: Show the directory structure of the project folder
-      - name: Show project folder
-        run: |
-          echo "Diagnosis: Show the directory structure of the project output folder"
-          tree ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
-
       # Upload build log
       - name: Upload build log
-        if: always()
-        continue-on-error: true      
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-
 
 
   build_GCC_Release:
@@ -269,16 +233,9 @@ jobs:
 
     steps:
       # Setup required toolchains and license
-
       # https://github.com/actions/checkout
       - name: Checkout
         uses: actions/checkout@v4
-
-      # https://github.com/actions/setup-python
-      - name: Setup Python 3.9
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
 
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate vcpkg
@@ -290,7 +247,7 @@ jobs:
 
       # Build executable for a specific target compiler pair
       - name: Build executable
-        working-directory: ./      
+        working-directory: ./
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --packs --verbose \
@@ -306,18 +263,8 @@ jobs:
                exit 1
             fi
 
-      # Diagnosis: Show the directory structure of the project folder
-      - name: Show project folder
-        if: always()
-        continue-on-error: true
-        run: |
-          echo "Diagnosis: Show the directory structure of the project output folder"
-          tree ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
-
       # Upload build log
       - name: Upload build log
-        if: always()
-        continue-on-error: true      
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
@@ -369,12 +316,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # https://github.com/actions/setup-python
-      - name: Setup Python 3.9
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
-
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate vcpkg
         uses: ARM-software/cmsis-actions/vcpkg@v1
@@ -401,14 +342,6 @@ jobs:
                exit 1
             fi
 
-      # Diagnosis: Show the directory structure of the project folder
-      - name: Show project folder
-        if: always()
-        continue-on-error: true      
-        run: |
-          echo "Diagnosis: Show the directory structure of the project output folder"
-          tree ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
-
       # Upload build log
       - name: Upload build log
         if: always()
@@ -417,6 +350,7 @@ jobs:
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+
 
   ci_execute_builds:
     needs: [
@@ -472,12 +406,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # https://github.com/actions/setup-python
-      - name: Setup Python 3.9
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
-
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate vcpkg
         uses: ARM-software/cmsis-actions/vcpkg@v1
@@ -514,7 +442,7 @@ jobs:
       # Diagnosis: Show the directory structure of artifacts folder
       - name: Show downloaded artifacts
         if: always()
-        continue-on-error: true    
+        continue-on-error: true
         working-directory: ./
         run: |
           echo "Show artifact folder"
