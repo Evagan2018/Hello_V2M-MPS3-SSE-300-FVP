@@ -90,7 +90,6 @@ jobs:
 
       # Build executable for a specific target compiler pair
       - name: Build executable
-        working-directory: ./
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --packs --verbose \
@@ -168,7 +167,6 @@ jobs:
 
       # Build executable for a specific target compiler pair
       - name: Build executable
-        working-directory: ./
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --packs --verbose \
@@ -247,7 +245,6 @@ jobs:
 
       # Build executable for a specific target compiler pair
       - name: Build executable
-        working-directory: ./
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --packs --verbose \
@@ -326,7 +323,6 @@ jobs:
 
       # Build executable for a specific target compiler pair
       - name: Build executable
-        working-directory: ./
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --packs --verbose \
@@ -350,7 +346,7 @@ jobs:
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
 
-  ci_execute_builds:
+  download_logs:
     needs: [
       install,
       build_AC6_Release,
@@ -399,7 +395,6 @@ jobs:
 
     steps:
       # Setup required toolchains and license
-
       # https://github.com/actions/checkout
       - name: Checkout
         uses: actions/checkout@v4
@@ -412,36 +407,25 @@ jobs:
       - name: Activate Arm tool license
         uses: ARM-software/cmsis-actions/armlm@v1      
 
-      # Create artifact directory
+      # Create an artifact directory for the logs
       - name: Create artifact directory
-        if: always()
-        continue-on-error: true      
-        working-directory: ./
         run: |
           mkdir -p artifact
 
-      # Download previous generated executables
-      - name: Download ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ⏬
-        if: always()
-        continue-on-error: true
+      # Download previous generated logs
+      - name: Download ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
         uses: actions/download-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: tmp
 
-      # Move downloaded exectuables to the artifact folder
-      - name: Move downloaded artifacts
-        if: always()
-        continue-on-error: true
-        working-directory: ./
+      # Move downloaded logs to the artifact folder
+      - name: Move downloaded logs
         run: |        
           mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
-      # Diagnosis: Show the directory structure of artifacts folder
-      - name: Show downloaded artifacts
-        if: always()
-        continue-on-error: true
-        working-directory: ./
+      # Diagnosis: Show the directory structure of the artifacts folder
+      - name: Show downloaded logs
         run: |
           echo "Show artifact folder"
           tree artifact

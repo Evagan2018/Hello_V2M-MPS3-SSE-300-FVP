@@ -22,6 +22,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
 
         compiler: [ 
@@ -68,67 +69,50 @@ jobs:
 
       # Build executable for a specific target compiler pair
       - name: Build executable
-        if: always()      
-        continue-on-error: true
-        working-directory: ./
         # Remark regarding the build log redirection (tee command). Do not redirect the build log to the ./out/hello_world/ folder.
         # This folder is currently used by the cbuild process. Access operations to this folder during the build operations will throws errors.
         # The build process creates in ./out/hello_world/ the following subdirectory structure:  /target_type/build_type/compiler_name/
         run: |
             echo "Build executable for a specific target compiler pair "
-            cbuild hello_world.csolution.yml --packs --context \
-                hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
-                --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            cbuild hello_world.csolution.yml --packs --verbose \
+                --context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
+                --toolchain ${{ matrix.compiler.name }} --rebuild \
+                --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
-      # Diagnosis: Show the directory structure of the project folder
-      - name: Show project folder
-        if: always()
-        continue-on-error: true
-        run: |
-          echo "Diagnosis: Show the directory structure of the project output folder"
-          tree ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
+            if [ $? -eq 0 ]; then
+               echo "Build succeeded"
+            else 
+               echo "Build failed"
+               exit 1
+            fi
 
       # Upload build log
       - name: Upload build log
-        if: always()
-        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
-      # Create artifact directory
+      # Create an artifact directory for the logs
       - name: Create artifact directory
-        if: always()
-        continue-on-error: true
-        working-directory: ./
         run: |
           mkdir -p artifact
 
       # Download previous generated executables
       - name: Download ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-        if: always()
-        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: tmp
 
-      # Move downloaded exectuables to the artifact folder
-      - name: Move downloaded artifacts
-        if: always()
-        continue-on-error: true
-        working-directory: ./
+      # Move downloaded logs to the artifact folder
+      - name: Move downloaded logs
         run: |        
           mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
       # Diagnosis: Show the directory structure of artifacts folder
-      - name: Show downloaded artifacts
-        if: always()
-        continue-on-error: true
-        working-directory: ./
+      - name: Show downloaded logs
         run: |
           echo "Show artifact folder"
           tree artifact
