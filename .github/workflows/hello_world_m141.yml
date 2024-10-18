@@ -329,9 +329,9 @@ jobs:
         working-directory: ./
         run: |
             echo "Build executable for a specific target compiler pair "
-            cbuild hello_world.csolution.yml --update-rte --packs --verbose \
+            cbuild hello_world.csolution.yml --packs --verbose \
                 --context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
-                --toolchain ${{ matrix.compiler.name }} -rebuild \
+                --toolchain ${{ matrix.compiler.name }} --rebuild \
                 --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
@@ -344,8 +344,6 @@ jobs:
 
       # Upload build log
       - name: Upload build log
-        if: always()
-        continue-on-error: true      
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
