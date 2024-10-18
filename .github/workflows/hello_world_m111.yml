@@ -19,24 +19,14 @@ on:
 jobs:
   install:  
     runs-on: ubuntu-latest
-    steps:  
-
-      # ----------------------------------------------------------------
+    steps:
       # Setup required toolchains and license
-      # ----------------------------------------------------------------
-
       # https://github.com/actions/checkout
-      - name: Checkout 🛎️
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # https://github.com/actions/setup-python
-      - name: Setup Python 3.9 📦
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
-
       # https://github.com/ARM-software/cmsis-actions
-      - name: Activate vcpkg 🎁
+      - name: Activate vcpkg
         uses: ARM-software/cmsis-actions/vcpkg@v1
 
       # https://github.com/ARM-software/cmsis-actions
@@ -44,7 +34,7 @@ jobs:
         uses: ARM-software/cmsis-actions/armlm@v1
     
 
-  ci_build_run:
+  build_executable:
     needs: [install]   
     strategy:
       matrix:
@@ -73,59 +63,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ----------------------------------------------------------------
       # Setup required toolchains and license
-      # ----------------------------------------------------------------
-
       # https://github.com/actions/checkout
-      - name: Checkout 🛎️
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # https://github.com/actions/setup-python
-      - name: Setup Python 3.9 📦
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
-
       # https://github.com/ARM-software/cmsis-actions
-      - name: Activate vcpkg 🎁
+      - name: Activate vcpkg
         uses: ARM-software/cmsis-actions/vcpkg@v1
 
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate Arm tool license
         uses: ARM-software/cmsis-actions/armlm@v1
 
-
-      # ----------------------------------------------------------------
       # Build executable for a specific target compiler pair
-      # ----------------------------------------------------------------
-      - name: CI build run 01
+      - name: Build executable
         run: |
             echo "Build executable for a specific target compiler pair "
-            cbuild hello_world.csolution.yml --update-rte --packs --context \
-                hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
-                --toolchain ${{ matrix.compiler.name }} -r \
-                | tee ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            cbuild hello_world.csolution.yml --packs --verbose \
+                --context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
+                --toolchain ${{ matrix.compiler.name }} --rebuild \
+                --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
-      # ----------------------------------------------------------------
-      # Diagnosis: Show the directory structure of the project folder
-      # ----------------------------------------------------------------
-      - name: CI build run 02
-        run: |
-          echo "Diagnosis: Show the directory structure of the project output folder"
-          tree ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
+            if [ $? -eq 0 ]; then
+               echo "Build succeeded"
+            else 
+               echo "Build failed"
+               exit 1
+            fi
 
-      # ----------------------------------------------------------------
       # Upload build log
-      # ----------------------------------------------------------------
-      - name: CI build run 03
+      - name: Upload build log
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-          path: ./${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+          path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
-  ci_execute_builds:
-    needs: [install, ci_build_run]
+  download_logs:
+    needs: [install, build_executable]
 
     strategy:
       matrix:
@@ -154,56 +130,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ----------------------------------------------------------------
-      # Setup required toolchains and license
-      # ----------------------------------------------------------------
-
       # https://github.com/actions/checkout
-      - name: Checkout 🛎️
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # https://github.com/actions/setup-python
-      - name: Setup Python 3.9 📦
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
+      # Create an artifact directory for the logs
+      - name: Create artifact directory
+        run: |
+          mkdir -p artifact
 
-      # https://github.com/ARM-software/cmsis-actions
-      - name: Activate vcpkg 🎁
-        uses: ARM-software/cmsis-actions/vcpkg@v1
-
-      # https://github.com/ARM-software/cmsis-actions
-      - name: Activate Arm tool license
-        uses: ARM-software/cmsis-actions/armlm@v1      
-
-
-      # ----------------------------------------------------------------
-      # Download previous generated executables
-      # ----------------------------------------------------------------
-      - name: Download built folders ⏬
+      # Download previous generated logs
+      - name: Download ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
         uses: actions/download-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-          path: artificats
+          path: tmp
 
-      # ----------------------------------------------------------------
-      # Execute the previous generated context on a model
-      # ----------------------------------------------------------------
-      - name: CI execute builds msg 01
+      # Move downloaded logs to the artifact folder
+      - name: Move downloaded logs
+        run: |        
+          mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+
+      # Diagnosis: Show the directory structure of the artifacts folder
+      - name: Show downloaded logs
         run: |
-          echo "CI execute builds msg 01"
-
-      # ----------------------------------------------------------------
-      # Upload FVP simulation results
-      # ----------------------------------------------------------------
-      - name: CI execute builds msg 02
-        run: |
-          echo "CI execute builds msg 02"
-
-
-      # ----------------------------------------------------------------
-      # Diagnosis: Show the directory structure of ./out folder
-      # ----------------------------------------------------------------
-      - name: CI execute builds msg 03
-        run: |
-          echo "CI execute builds msg 03"
+          echo "Show artifact folder"
+          tree artifact

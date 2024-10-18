@@ -399,14 +399,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # https://github.com/ARM-software/cmsis-actions
-      - name: Activate vcpkg
-        uses: ARM-software/cmsis-actions/vcpkg@v1
-
-      # https://github.com/ARM-software/cmsis-actions
-      - name: Activate Arm tool license
-        uses: ARM-software/cmsis-actions/armlm@v1      
-
       # Create an artifact directory for the logs
       - name: Create artifact directory
         run: |
