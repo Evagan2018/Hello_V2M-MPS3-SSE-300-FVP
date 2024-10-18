@@ -79,7 +79,7 @@ jobs:
       # Build executable for a specific target compiler pair
       - name: Build executable
         if: always()
-        # continue-on-error: true
+        continue-on-error: true
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --packs --verbose \
@@ -98,6 +98,7 @@ jobs:
       # Upload build log
       - name: Upload build log
         uses: actions/upload-artifact@v4
+        if: always()        
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
