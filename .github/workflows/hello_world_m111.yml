@@ -78,7 +78,7 @@ jobs:
 
       # Build executable for a specific target compiler pair
       - name: Build executable
-        continue-on-error: true      
+        # continue-on-error: true
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --packs --verbose \
