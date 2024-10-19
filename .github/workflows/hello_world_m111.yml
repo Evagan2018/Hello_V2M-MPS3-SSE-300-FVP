@@ -89,12 +89,11 @@ jobs:
                 --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
             if [ $? -eq 0 ]; then
-               echo "Return code" $? ;
-               echo "::notice:: Build succeeded."; 
+               echo "::notice::Build succeeded."; 
                mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
             else 
-               echo "Return code" $? ;
-               echo "::error:: Build failed for context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} with toolchain ${{ matrix.compiler.name }}" && exit 1 ;
+               echo "::error::Build failed for context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} with toolchain ${{ matrix.compiler.name }}" ;
+               exit 1;
             fi
 
 
@@ -107,6 +106,7 @@ jobs:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           if-no-files-found: error
+
 
   download_logs:
     needs: [install, build_executable]
