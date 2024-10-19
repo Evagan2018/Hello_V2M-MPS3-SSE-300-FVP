@@ -158,7 +158,7 @@ jobs:
 
       # Move downloaded logs to the artifact folder
       - name: Move downloaded logs
-        if: always()
+        # if: always()
         continue-on-error: true              
         run: |        
           mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
