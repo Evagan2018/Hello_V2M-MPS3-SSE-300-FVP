@@ -88,11 +88,9 @@ jobs:
                 --toolchain ${{ matrix.compiler.name }} --rebuild \
                 --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
-            echo "Return code" $? ;
-
             if [ $? -eq 0 ]; then
                echo "Return code" $? ;            
-               echo "Build succeeded." $? ; 
+               echo "::OK:: Build succeeded." $? ; 
             else 
                echo "Return code" $? ;
                echo "::error:: Build failed for context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} with toolchain ${{ matrix.compiler.name }}" && exit 1 ;
