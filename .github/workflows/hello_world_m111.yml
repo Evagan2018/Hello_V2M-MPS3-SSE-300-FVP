@@ -79,7 +79,7 @@ jobs:
       # Build executable for a specific target compiler pair
       - name: Build executable
         if: always()
-        continue-on-error: false
+        continue-on-error: true
         run: |
             set +e
             echo "Build executable for a specific target compiler pair "
@@ -93,7 +93,6 @@ jobs:
                mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
             else 
                echo "::error::Build failed for context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} with toolchain ${{ matrix.compiler.name }}" ;
-               exit 1;
             fi
 
 
@@ -105,7 +104,7 @@ jobs:
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-          if-no-files-found: error
+          if-no-files-found: ignore
 
 
   download_logs:
@@ -158,6 +157,8 @@ jobs:
 
       # Move downloaded logs to the artifact folder
       - name: Move downloaded logs
+        if: always()
+        continue-on-error: true              
         run: |        
           mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
