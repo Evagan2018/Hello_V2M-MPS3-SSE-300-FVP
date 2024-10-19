@@ -148,19 +148,6 @@ jobs:
         run: |
           mkdir -p artifact
 
-      # Check if logs exist
-      - uses: softwareforgood/check-artifact-v4-existence@v0
-        continue-on-error: true
-        with:
-          name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-
-      # Show exit code
-      - name: Show exit code
-        if: always()
-        continue-on-error: true
-        run: |
-          echo $?
-
       # Download previous generated logs
       - name: Download ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
         uses: actions/download-artifact@v4
