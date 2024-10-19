@@ -93,7 +93,8 @@ jobs:
                mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
             # else 
                # echo "::error::Build failed for context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} with toolchain ${{ matrix.compiler.name }}" ;
-               # echo "Build failed for context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} with toolchain ${{ matrix.compiler.name }}" ;               
+               # echo "Build failed for context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} with toolchain ${{ matrix.compiler.name }}" ;
+               exit 1
             fi
 
 
@@ -152,6 +153,13 @@ jobs:
         continue-on-error: true
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+
+      # Show exit code
+      - name: Show exit code
+        if: always()
+        continue-on-error: true
+        run: |
+          echo $?
 
       # Download previous generated logs
       - name: Download ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
