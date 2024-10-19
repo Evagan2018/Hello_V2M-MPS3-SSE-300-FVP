@@ -79,7 +79,7 @@ jobs:
       # Build executable for a specific target compiler pair
       - name: Build executable
         if: always()
-        continue-on-error: true
+        continue-on-error: false
         run: |
             set +e
             echo "Build executable for a specific target compiler pair "
