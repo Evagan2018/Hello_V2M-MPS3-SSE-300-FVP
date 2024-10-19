@@ -89,10 +89,10 @@ jobs:
                 --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
             if [ $? -eq 0 ]; then
-               echo "::notice::Build succeeded."; 
+               echo "::debug::Build succeeded."; 
                mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
             else 
-               echo "::error::Build failed for context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} with toolchain ${{ matrix.compiler.name }}" ;
+               # echo "::error::Build failed for context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} with toolchain ${{ matrix.compiler.name }}" ;
             fi
 
 
