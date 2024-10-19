@@ -81,6 +81,7 @@ jobs:
         if: always()
         continue-on-error: true
         run: |
+            set +e
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --packs --verbose \
                 --context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
