@@ -45,7 +45,7 @@ jobs:
         ]
 
         target: [
-          {type: ARMCM0,   model: tbd,  board: tbd}, 
+          # {type: ARMCM0,   model: tbd,  board: tbd}, 
           # {type: ARMCM0P,  model: tbd,  board: tbd}, 
           # {type: ARMCM1,   model: tbd,  board: tbd}, 
           # {type: ARMCM3,   model: tbd,  board: tbd}, 
@@ -87,8 +87,11 @@ jobs:
                 --toolchain ${{ matrix.compiler.name }} --rebuild \
                 --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
+            echo "Return code" $? ;
+
             if [ $? -eq 0 ]; then
-               echo "Build succeeded. Return code" $? ; 
+               echo "Return code" $? ;            
+               echo "Build succeeded." $? ; 
             else 
                echo "Return code" $? ;
                echo "::error:: Build failed for context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} with toolchain ${{ matrix.compiler.name }}" && exit 1 ;
@@ -118,7 +121,7 @@ jobs:
         ]
 
         target: [
-          {type: ARMCM0,   model: tbd,  board: tbd}, 
+          # {type: ARMCM0,   model: tbd,  board: tbd}, 
           # {type: ARMCM0P,  model: tbd,  board: tbd}, 
           # {type: ARMCM1,   model: tbd,  board: tbd}, 
           # {type: ARMCM3,   model: tbd,  board: tbd}, 
