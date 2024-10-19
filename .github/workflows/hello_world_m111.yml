@@ -86,13 +86,15 @@ jobs:
                 --context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} --rebuild \
                 --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
             if [ $? -eq 0 ]; then
-               echo "Build succeeded"
+               echo "Build succeeded. Return code" $? ; 
             else 
-               echo "::error::Build failed for context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} with toolchain ${{ matrix.compiler.name }} "  && exit 1
+               echo "Return code" $? ;
+               echo "::error:: Build failed for context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} with toolchain ${{ matrix.compiler.name }}" && exit 1 ;
             fi
+
+            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
       # Upload build log
       - name: Upload build log
