@@ -91,8 +91,7 @@ jobs:
                 --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
       - name: Prepare erorr build log for upload
-        if: always()      
-        if: steps.build_executable.outcome != 'success'
+        if: always() && steps.build_executable.outcome != 'success'
         run: |
             echo "Build error" > ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
