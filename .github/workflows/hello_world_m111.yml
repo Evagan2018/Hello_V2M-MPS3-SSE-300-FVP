@@ -34,7 +34,7 @@ jobs:
         uses: ARM-software/cmsis-actions/armlm@v1
     
 
-  build_executable:
+  bld_exe:
     needs: [install]   
     strategy:
       fail-fast: false
@@ -83,29 +83,29 @@ jobs:
         uses: ARM-software/cmsis-actions/armlm@v1
 
       # Build executable for a specific target compiler pair
-      - name: Build executable
+      - name: Build executable ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}
         id: build_executable
         if: always()
-        # continue-on-error: true
         run: |
-            # set +e
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --packs --verbose \
                 --context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} --rebuild \
                 --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
-      - name: Prepare erorr build log for upload
+      - name: Error build log
         if: always() && steps.build_executable.outcome != 'success'
         run: |
             echo "Build error" > ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            if [ -f ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
+               cat ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ;
+            fi 
 
-      - name: Prepare success build log for upload
+      - name: Success build log
         if: steps.build_executable.outcome == 'success'
         run: | 
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
-      # Upload build log
       - name: Upload build log
         uses: actions/upload-artifact@v4
         if: always()
@@ -117,7 +117,7 @@ jobs:
 
 
   download_logs:
-    needs: [install, build_executable]
+    needs: [install, bld_exe]
 
     strategy:
       fail-fast: true
