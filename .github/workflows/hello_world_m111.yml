@@ -37,6 +37,7 @@ jobs:
   build_executable:
     needs: [install]   
     strategy:
+      fail-fast: false  
       matrix:
 
         compiler: [ 
@@ -113,6 +114,7 @@ jobs:
     needs: [install, build_executable]
 
     strategy:
+      fail-fast: false
       matrix:
 
         compiler: [ 
