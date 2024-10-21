@@ -79,6 +79,7 @@ jobs:
 
       # Build executable for a specific target compiler pair
       - name: Build executable
+        id: build_executable
         if: always()
         continue-on-error: true
         run: |
@@ -89,17 +90,15 @@ jobs:
                 --toolchain ${{ matrix.compiler.name }} --rebuild \
                 --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
-            if [ $? -eq 0 ]; then
-               echo "::debug::Build succeeded.";
-               echo "Move generated build log";
-               mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
-            else 
-               echo "Build error" > ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ;
-               # echo "::error::Build failed for context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} with toolchain ${{ matrix.compiler.name }}" ;
-               # echo "Build failed for context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} with toolchain ${{ matrix.compiler.name }}" ;
-               exit 1 ;
-            fi
+      - name: Prepare erorr build log for upload
+        if: steps.build_executable.outcome != 'success'
+        run: |
+            echo "Build error" > ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
+      - name: Prepare success build log for upload
+        if: steps.build_executable.outcome == 'success'
+        run: | 
+            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
       # Upload build log
       - name: Upload build log
