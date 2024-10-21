@@ -81,7 +81,7 @@ jobs:
       - name: Build executable
         id: build_executable
         if: always()
-        continue-on-error: true
+        # continue-on-error: true
         run: |
             # set +e
             echo "Build executable for a specific target compiler pair "
@@ -91,6 +91,7 @@ jobs:
                 --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
 
       - name: Prepare erorr build log for upload
+        if: always()      
         if: steps.build_executable.outcome != 'success'
         run: |
             echo "Build error" > ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
