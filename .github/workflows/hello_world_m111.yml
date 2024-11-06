@@ -65,24 +65,9 @@ jobs:
           {type: Release}
         ]
 
-      max-parallel: 4
+      max-parallel: 8
 
     steps:
-      # Setup required toolchains and license
-      # https://github.com/actions/checkout
-      - name: Checkout
-        if: always() 
-        uses: actions/checkout@v4
-
-      # https://github.com/ARM-software/cmsis-actions
-      - name: Activate vcpkg
-        if: always()
-        uses: ARM-software/cmsis-actions/vcpkg@v1
-
-      # https://github.com/ARM-software/cmsis-actions
-      - name: Activate Arm tool license
-        if: always()      
-        uses: ARM-software/cmsis-actions/armlm@v1
 
       # Build executable for a specific target compiler pair
       - name: Build executable ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}
@@ -147,7 +132,7 @@ jobs:
           {type: Release}
         ]
 
-      max-parallel: 4
+      max-parallel: 8
 
     steps:
       # https://github.com/actions/checkout
