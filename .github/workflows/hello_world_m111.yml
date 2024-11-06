@@ -55,7 +55,7 @@ jobs:
           # {type: ARMCM0,   model: tbd,  board: tbd}, 
           # {type: ARMCM0P,  model: tbd,  board: tbd}, 
           # {type: ARMCM1,   model: tbd,  board: tbd}, 
-          # {type: ARMCM3,   model: tbd,  board: tbd}, 
+          {type: ARMCM3,   model: tbd,  board: tbd}, 
           # {type: ARMCM55,  model: tbd,  board: tbd}, 
           {type: ARMCM85,  model: tbd,  board: tbd}
         ]
@@ -137,7 +137,7 @@ jobs:
           # {type: ARMCM0,   model: tbd,  board: tbd}, 
           # {type: ARMCM0P,  model: tbd,  board: tbd}, 
           # {type: ARMCM1,   model: tbd,  board: tbd}, 
-          # {type: ARMCM3,   model: tbd,  board: tbd}, 
+          {type: ARMCM3,   model: tbd,  board: tbd}, 
           # {type: ARMCM55,  model: tbd,  board: tbd}, 
           {type: ARMCM85,  model: tbd,  board: tbd}
         ]
@@ -182,3 +182,4 @@ jobs:
         run: |
           echo "Show artifact folder"
           tree artifact
+          cat ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
