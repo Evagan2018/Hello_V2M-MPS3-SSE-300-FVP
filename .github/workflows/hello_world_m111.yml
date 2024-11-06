@@ -1,4 +1,4 @@
-name: Hello World example. Matrix and 3 sequential jobs.
+name: Matrix and 3 sequential jobs.
 
 on:
   workflow_dispatch:
@@ -16,8 +16,11 @@ on:
   schedule:
     - cron: '00 22 * * 0'
 
+env:
+   "nr_jobs=8"
+
 jobs:
-  install:  
+  install:
     runs-on: ubuntu-latest
     steps:
       # Setup required toolchains and license
@@ -65,7 +68,7 @@ jobs:
           {type: Release}
         ]
 
-      max-parallel: 1
+      max-parallel: $env.nr_jobs
 
     steps:
       # Setup required toolchains and license
@@ -119,9 +122,9 @@ jobs:
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           if-no-files-found: ignore
 
-
   download_logs:
     needs: [install, bld_exe]
+    if: ${{ always() }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -148,8 +151,6 @@ jobs:
         ]
 
       max-parallel: 1
-    # continue-on-error: true
-
 
     steps:
       # https://github.com/actions/checkout
