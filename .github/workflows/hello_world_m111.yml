@@ -68,7 +68,7 @@ jobs:
           {type: Release}
         ]
 
-      max-parallel: env.nr_jobs
+      max-parallel: ${{ env.nr_jobs }}
 
     steps:
       # Setup required toolchains and license
