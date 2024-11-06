@@ -83,11 +83,12 @@ jobs:
       - name: Error build log
         if: always() && steps.build_executable.outcome != 'success'
         run: |
-            tree
-            # echo "Build error" > ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-            # if [ -f ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
-            #   cat ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ;
-            # fi 
+            # Check if a build exist
+            if [ -f ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
+                tree
+            else
+                echo "Error: Build log does not exist!" > ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+            fi 
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
       - name: Success build log
@@ -96,7 +97,7 @@ jobs:
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
       - name: Upload build log
-        if: always() && steps.build_executable.outcome == 'success'
+        if: always() && ((steps.build_executable.outcome == 'success') || (steps.build_executable.outcome != 'success'))
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
