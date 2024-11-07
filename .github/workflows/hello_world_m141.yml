@@ -37,6 +37,12 @@ jobs:
 
   build_AC6_Release:
     needs: [install]
+    runs-on: ubuntu-latest
+
+    if: ${{ always() && contains(needs.*.result, 'success') }}
+    outputs:
+      job-status: ${{ job.status }}
+
     strategy:
       fail-fast: false
       matrix:
@@ -65,14 +71,12 @@ jobs:
           {type: ARMCM85,              model: tbd,  board: tbd}
         ]
 
-
         build: [ 
           {type: Release}
         ]
 
-      max-parallel: 1
+      max-parallel: 8
 
-    runs-on: ubuntu-latest
 
     steps:
       # Setup required toolchains and license
@@ -90,31 +94,51 @@ jobs:
 
       # Build executable for a specific target compiler pair
       - name: Build executable
+        id: build_executable
+        if: always()
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --packs --verbose \
                 --context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} --rebuild \
                 --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+
+      - name: Error build log
+        if: always() && steps.build_executable.outcome != 'success'
+        run: |
+            # Check if a build exist
+            if [ -f ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
+                tree
+            else
+                touch ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+                mkdir -p out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}
+                echo "Error: Build log does not exist!" > ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+                tree
+            fi 
+            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
+      
+      - name: Success build log
+        if: steps.build_executable.outcome == 'success'
+        run: | 
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
-            if [ $? -eq 0 ]; then
-               echo "Build succeeded"
-            else 
-               echo "Build failed"
-               exit 1
-            fi
-
-      # Upload build log
       - name: Upload build log
+        if: always() && ((steps.build_executable.outcome == 'success') || (steps.build_executable.outcome != 'success'))
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+          if-no-files-found: ignore
 
 
   build_AC6_Debug:
     needs: [install]
+    runs-on: ubuntu-latest
+
+    if: ${{ always() && contains(needs.*.result, 'success') }}
+    outputs:
+      job-status: ${{ job.status }}
+
     strategy:
       fail-fast: false
       matrix:
@@ -147,9 +171,8 @@ jobs:
           {type: Debug}
         ]
 
-      max-parallel: 1
+      max-parallel: 8
 
-    runs-on: ubuntu-latest
 
     steps:
       # Setup required toolchains and license
@@ -167,32 +190,52 @@ jobs:
 
       # Build executable for a specific target compiler pair
       - name: Build executable
+        id: build_executable
+        if: always()
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --packs --verbose \
                 --context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} --rebuild \
                 --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+
+      - name: Error build log
+        if: always() && steps.build_executable.outcome != 'success'
+        run: |
+            # Check if a build exist
+            if [ -f ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
+                tree
+            else
+                touch ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+                mkdir -p out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}
+                echo "Error: Build log does not exist!" > ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+                tree
+            fi 
+            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
+      
+      - name: Success build log
+        if: steps.build_executable.outcome == 'success'
+        run: | 
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
-            if [ $? -eq 0 ]; then
-               echo "Build succeeded"
-            else 
-               echo "Build failed"
-               exit 1
-            fi
-
-      # Upload build log
       - name: Upload build log
+        if: always() && ((steps.build_executable.outcome == 'success') || (steps.build_executable.outcome != 'success'))
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+          if-no-files-found: ignore
+
 
 
   build_GCC_Release:
-  
     needs: [install]
+    runs-on: ubuntu-latest
+    
+    if: ${{ always() && contains(needs.*.result, 'success') }}
+    outputs:
+      job-status: ${{ job.status }}    
+
     strategy:
       fail-fast: false
       matrix:
@@ -225,9 +268,8 @@ jobs:
           {type: Release}
         ]
 
-      max-parallel: 1
+      max-parallel: 8
 
-    runs-on: ubuntu-latest
 
     steps:
       # Setup required toolchains and license
@@ -245,31 +287,51 @@ jobs:
 
       # Build executable for a specific target compiler pair
       - name: Build executable
+        id: build_executable
+        if: always()
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --packs --verbose \
                 --context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} --rebuild \
                 --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+
+      - name: Error build log
+        if: always() && steps.build_executable.outcome != 'success'
+        run: |
+            # Check if a build exist
+            if [ -f ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
+                tree
+            else
+                touch ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+                mkdir -p out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}
+                echo "Error: Build log does not exist!" > ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+                tree
+            fi 
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
-            if [ $? -eq 0 ]; then
-               echo "Build succeeded"
-            else 
-               echo "Build failed"
-               exit 1
-            fi
+      - name: Success build log
+        if: steps.build_executable.outcome == 'success'
+        run: | 
+            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
-      # Upload build log
       - name: Upload build log
+        if: always() && ((steps.build_executable.outcome == 'success') || (steps.build_executable.outcome != 'success'))
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+          if-no-files-found: ignore
 
 
   build_GCC_Debug:
     needs: [install]
+    runs-on: ubuntu-latest
+
+    if: ${{ always() && contains(needs.*.result, 'success') }}
+    outputs:
+      job-status: ${{ job.status }}
+
     strategy:
       fail-fast: false
       matrix:
@@ -302,9 +364,7 @@ jobs:
           {type: Debug}
         ]
 
-      max-parallel: 1
-
-    runs-on: ubuntu-latest
+      max-parallel: 8
 
     steps:
       # Setup required toolchains and license
@@ -323,27 +383,41 @@ jobs:
 
       # Build executable for a specific target compiler pair
       - name: Build executable
+        id: build_executable
+        if: always()        
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --packs --verbose \
                 --context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} --rebuild \
                 --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+
+      - name: Error build log
+        if: always() && steps.build_executable.outcome != 'success'
+        run: |
+            # Check if a build exist
+            if [ -f ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
+                tree
+            else
+                touch ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+                mkdir -p out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}
+                echo "Error: Build log does not exist!" > ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+                tree
+            fi 
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
-            if [ $? -eq 0 ]; then
-               echo "Build succeeded"
-            else 
-               echo "Build failed"
-               exit 1
-            fi
+      - name: Success build log
+        if: steps.build_executable.outcome == 'success'
+        run: | 
+            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
-      # Upload build log
       - name: Upload build log
+        if: always() && ((steps.build_executable.outcome == 'success') || (steps.build_executable.outcome != 'success'))
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+          if-no-files-found: ignore
 
 
   download_logs:
@@ -354,6 +428,8 @@ jobs:
       build_GCC_Release,
       build_GCC_Debug
     ]
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
 
     strategy:
       fail-fast: false
@@ -389,16 +465,9 @@ jobs:
           {type: Release}
         ]
 
-      max-parallel: 1
-
-    runs-on: ubuntu-latest
+      max-parallel: 8
 
     steps:
-      # Setup required toolchains and license
-      # https://github.com/actions/checkout
-      - name: Checkout
-        uses: actions/checkout@v4
-
       # Create an artifact directory for the logs
       - name: Create artifact directory
         run: |
@@ -406,18 +475,24 @@ jobs:
 
       # Download previous generated logs
       - name: Download ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+        id: download_logs
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: tmp
 
       # Move downloaded logs to the artifact folder
       - name: Move downloaded logs
-        run: |        
-          mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+        if: always()      
+        run: |
+          if [ -f ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
+             mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ;
+          fi
 
       # Diagnosis: Show the directory structure of the artifacts folder
       - name: Show downloaded logs
         run: |
           echo "Show artifact folder"
           tree artifact
+          cat ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
