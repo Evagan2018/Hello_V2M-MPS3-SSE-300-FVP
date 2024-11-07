@@ -17,7 +17,10 @@ on:
     - cron: '00 22 * * 0'
 
 jobs:
+
   install:
+    # The intention of this part of the code is to do the checkout of the repository in this job and use it in later jobs.
+    # Get first the runner.name
     runs-on: ubuntu-latest
     outputs:
       established-runner: ${{ runner.name }}
@@ -117,7 +120,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
 
         compiler: [ 
@@ -162,7 +165,7 @@ jobs:
 
       # Move downloaded logs to the artifact folder
       - name: Move downloaded logs
-        continue-on-error: true              
+        continue-on-error: true
         run: |
           if [ -f ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
              mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ;
