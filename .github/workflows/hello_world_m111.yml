@@ -145,10 +145,6 @@ jobs:
       max-parallel: 8
 
     steps:
-      # https://github.com/actions/checkout
-      - name: Checkout
-        uses: actions/checkout@v4
-
       # Create an artifact directory for the logs
       - name: Create artifact directory
         run: |
@@ -165,7 +161,7 @@ jobs:
 
       # Move downloaded logs to the artifact folder
       - name: Move downloaded logs
-        continue-on-error: true
+        if: always()
         run: |
           if [ -f ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
              mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ;
