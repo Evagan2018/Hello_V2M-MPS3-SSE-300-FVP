@@ -19,20 +19,10 @@ on:
 jobs:
   install:
     runs-on: ubuntu-latest
+    outputs:
+      established-runner: ${{ runner.name }}
     steps:
-      # Setup required toolchains and license
-      # https://github.com/actions/checkout
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      # https://github.com/ARM-software/cmsis-actions
-      - name: Activate vcpkg
-        uses: ARM-software/cmsis-actions/vcpkg@v1
-
-      # https://github.com/ARM-software/cmsis-actions
-      - name: Activate Arm tool license
-        uses: ARM-software/cmsis-actions/armlm@v1
-
+      - run: echo "selected runner = ${{ runner.name }}"
 
   bld_exe:
     needs: [install]
@@ -67,7 +57,12 @@ jobs:
 
       max-parallel: 8
 
-    steps:      
+    steps:
+      # Setup required toolchains and license
+      # https://github.com/actions/checkout
+      - name: Checkout
+        uses: actions/checkout@v4
+      
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate vcpkg
         uses: ARM-software/cmsis-actions/vcpkg@v1
