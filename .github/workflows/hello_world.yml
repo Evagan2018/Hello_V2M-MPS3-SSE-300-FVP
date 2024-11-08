@@ -123,14 +123,15 @@ jobs:
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           if-no-files-found: ignore
 
-      # Create an artifact directory for the logs
+      # Create an artifact directory for the build logs
       - name: Create artifact directory
+        if: always()
         run: |
           mkdir -p artifact
 
       # Download previous generated executables
       - name: Download ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-        id: download_logs
+        id: download_build_logs
         if: always()
         uses: actions/download-artifact@v4
         with:
@@ -138,16 +139,18 @@ jobs:
           path: tmp
 
       # Move downloaded logs to the artifact folder
-      - name: Move downloaded logs
-        if: always()
+      - name: Move downloaded build logs
+        id: move_downloaded_build_logs
+        if: always() && (steps.download_build_logs.outcome == 'success')
         run: |
-          tree        
+          tree
           if [ -f ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
              mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ;
           fi
 
       # Diagnosis: Show the directory structure of artifacts folder
-      - name: Show downloaded logs
+      - name: Show downloaded build logs
+        if: always() && (steps.move_downloaded_build_logs.outcome == 'success')
         run: |
           echo "Show artifact folder"
           tree artifact
