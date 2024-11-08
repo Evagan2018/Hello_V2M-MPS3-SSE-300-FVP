@@ -1,4 +1,4 @@
-name: Matrix and 3 sequential jobs.
+name: Matrix and 3 sequential jobs
 
 on:
   workflow_dispatch:

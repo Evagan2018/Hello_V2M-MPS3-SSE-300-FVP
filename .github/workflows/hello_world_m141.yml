@@ -1,4 +1,4 @@
-name: Hello World example. Matrix and 4 parallel build jobs.
+name: Matrix and 4 parallel build jobs
 
 on:
   workflow_dispatch:
@@ -16,31 +16,27 @@ on:
   schedule:
     - cron: '00 22 * * 0'
 
-concurrency:  
+concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
 
-  install:
+  diagnosis:
+    # In preparation: The intention of this part of the code is to do the checkout
+    # of the repository in this job and share the workspace in subsequent jobs.
+
+    # Diagnosis: Get the current runner.name and the Concurrency group
     runs-on: ubuntu-latest
+    outputs:
+      established-runner: ${{ runner.name }}
     steps:
-      # Setup required toolchains and license
-      # https://github.com/actions/checkout
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      # https://github.com/ARM-software/cmsis-actions
-      - name: Activate vcpkg
-        uses: ARM-software/cmsis-actions/vcpkg@v1
-
-      # https://github.com/ARM-software/cmsis-actions
-      - name: Activate Arm tool license
-        uses: ARM-software/cmsis-actions/armlm@v1
-
+      - run: | 
+          echo "Info: Selected runner = ${{ runner.name }}"
+          echo "Info: Concurrency group = ${{ github.workflow }}-${{ github.ref }}"
 
   build_AC6_Release:
-    needs: [install]
+    needs: [diagnosis]
     runs-on: ubuntu-latest
 
     if: ${{ always() && contains(needs.*.result, 'success') }}
@@ -136,7 +132,7 @@ jobs:
 
 
   build_AC6_Debug:
-    needs: [install]
+    needs: [diagnosis]
     runs-on: ubuntu-latest
 
     if: ${{ always() && contains(needs.*.result, 'success') }}
@@ -233,7 +229,7 @@ jobs:
 
 
   build_GCC_Release:
-    needs: [install]
+    needs: [diagnosis]
     runs-on: ubuntu-latest
     
     if: ${{ always() && contains(needs.*.result, 'success') }}
@@ -329,7 +325,7 @@ jobs:
 
 
   build_GCC_Debug:
-    needs: [install]
+    needs: [diagnosis]
     runs-on: ubuntu-latest
 
     if: ${{ always() && contains(needs.*.result, 'success') }}
@@ -426,7 +422,6 @@ jobs:
 
   download_logs:
     needs: [
-      install,
       build_AC6_Release,
       build_AC6_Debug,
       build_GCC_Release,
