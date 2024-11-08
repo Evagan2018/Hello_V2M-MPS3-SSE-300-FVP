@@ -143,7 +143,6 @@ jobs:
         id: move_downloaded_build_logs
         if: always() && (steps.download_build_logs.outcome == 'success')
         run: |
-          tree
           if [ -f ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
              mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ;
           fi
@@ -152,6 +151,6 @@ jobs:
       - name: Show downloaded build logs
         if: always() && (steps.move_downloaded_build_logs.outcome == 'success')
         run: |
-          echo "Show artifact folder"
-          tree artifact
+          tree tmp/ artifact/ out/
+          echo "Show build log"
           cat ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
