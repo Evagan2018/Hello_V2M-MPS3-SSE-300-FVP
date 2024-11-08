@@ -16,9 +16,11 @@ on:
   schedule:
     - cron: '00 22 * * 0'
 
-concurrency:  
+concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+# Test concurrency
 
 jobs:
 
