@@ -75,8 +75,7 @@ jobs:
           {type: Release}
         ]
 
-      max-parallel: 8
-
+      max-parallel: 12
 
     steps:
       # Setup required toolchains and license
@@ -106,9 +105,13 @@ jobs:
       - name: Error build log
         if: always() && steps.build_executable.outcome != 'success'
         run: |
-            # Check if a build exist
+            # Check if a build log exists
             if [ -f ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
-                tree
+                # Check if the correspond build output directory exist. Special corner case handling i.e. Pack download error.
+                if [ ! -d out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}]; then
+                  mkdir -p out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}
+                fi 
+               tree
             else
                 touch ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
                 mkdir -p out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}
@@ -116,7 +119,7 @@ jobs:
                 tree
             fi 
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
-      
+
       - name: Success build log
         if: steps.build_executable.outcome == 'success'
         run: | 
@@ -171,8 +174,7 @@ jobs:
           {type: Debug}
         ]
 
-      max-parallel: 8
-
+      max-parallel: 12
 
     steps:
       # Setup required toolchains and license
@@ -202,9 +204,13 @@ jobs:
       - name: Error build log
         if: always() && steps.build_executable.outcome != 'success'
         run: |
-            # Check if a build exist
+            # Check if a build log exists
             if [ -f ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
-                tree
+                # Check if the correspond build output directory exist. Special corner case handling i.e. Pack download error.
+                if [ ! -d out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}]; then
+                  mkdir -p out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}
+                fi 
+               tree
             else
                 touch ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
                 mkdir -p out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}
@@ -212,7 +218,7 @@ jobs:
                 tree
             fi 
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
-      
+
       - name: Success build log
         if: steps.build_executable.outcome == 'success'
         run: | 
@@ -225,7 +231,6 @@ jobs:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           if-no-files-found: ignore
-
 
 
   build_GCC_Release:
@@ -268,8 +273,7 @@ jobs:
           {type: Release}
         ]
 
-      max-parallel: 8
-
+      max-parallel: 12
 
     steps:
       # Setup required toolchains and license
@@ -299,9 +303,13 @@ jobs:
       - name: Error build log
         if: always() && steps.build_executable.outcome != 'success'
         run: |
-            # Check if a build exist
+            # Check if a build log exists
             if [ -f ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
-                tree
+                # Check if the correspond build output directory exist. Special corner case handling i.e. Pack download error.
+                if [ ! -d out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}]; then
+                  mkdir -p out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}
+                fi 
+               tree
             else
                 touch ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
                 mkdir -p out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}
@@ -364,7 +372,7 @@ jobs:
           {type: Debug}
         ]
 
-      max-parallel: 8
+      max-parallel: 12
 
     steps:
       # Setup required toolchains and license
@@ -384,7 +392,7 @@ jobs:
       # Build executable for a specific target compiler pair
       - name: Build executable
         id: build_executable
-        if: always()        
+        if: always()
         run: |
             echo "Build executable for a specific target compiler pair "
             cbuild hello_world.csolution.yml --packs --verbose \
@@ -395,9 +403,13 @@ jobs:
       - name: Error build log
         if: always() && steps.build_executable.outcome != 'success'
         run: |
-            # Check if a build exist
+            # Check if a build log exists
             if [ -f ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
-                tree
+                # Check if the correspond build output directory exist. Special corner case handling i.e. Pack download error.
+                if [ ! -d out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}]; then
+                  mkdir -p out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}
+                fi 
+               tree
             else
                 touch ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
                 mkdir -p out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}
@@ -464,17 +476,18 @@ jobs:
           {type: Release}
         ]
 
-      max-parallel: 8
+      max-parallel: 12
 
     steps:
       # Create an artifact directory for the logs
       - name: Create artifact directory
+        if: always()
         run: |
           mkdir -p artifact
 
       # Download previous generated logs
       - name: Download ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
-        id: download_logs
+        id: download_build_logs
         uses: actions/download-artifact@v4
         continue-on-error: true
         with:
@@ -482,8 +495,9 @@ jobs:
           path: tmp
 
       # Move downloaded logs to the artifact folder
-      - name: Move downloaded logs
-        if: always()      
+      - name: Move downloaded build logs
+        id: move_downloaded_build_logs      
+        if: always() && (steps.download_build_logs.outcome == 'success')
         run: |
           if [ -f ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
              mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ;
@@ -492,6 +506,6 @@ jobs:
       # Diagnosis: Show the directory structure of the artifacts folder
       - name: Show downloaded logs
         run: |
+          tree tmp/ artifact/ out/
           echo "Show artifact folder"
-          tree artifact
           cat ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
