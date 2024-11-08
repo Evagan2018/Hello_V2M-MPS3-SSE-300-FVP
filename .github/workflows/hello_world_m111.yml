@@ -20,7 +20,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# Test concurrency
 
 jobs:
 
@@ -40,7 +39,7 @@ jobs:
   bld_exe:
     needs: [diagnosis]
     runs-on: ubuntu-latest
-    
+
     if: ${{ always() && contains(needs.*.result, 'success') }}
     outputs:
       job-status: ${{ job.status }}
@@ -56,12 +55,23 @@ jobs:
         ]
 
         target: [
-          {type: ARMCM0,   model: tbd,  board: tbd}, 
-          {type: ARMCM0P,  model: tbd,  board: tbd}, 
-          {type: ARMCM1,   model: tbd,  board: tbd}, 
-          {type: ARMCM3,   model: tbd,  board: tbd}, 
-          {type: ARMCM55,  model: tbd,  board: tbd}, 
-          {type: ARMCM85,  model: tbd,  board: tbd}
+          {type: CMSDK_CM0_VHT,        model: tbd,  board: tbd}, 
+          {type: CMSDK_CM0plus_VHT,    model: tbd,  board: tbd}, 
+          {type: CMSDK_CM3_VHT,        model: tbd,  board: tbd}, 
+          {type: CMSDK_CM4_VHT,        model: tbd,  board: tbd}, 
+          {type: CMSDK_CM4_FP_VHT,     model: tbd,  board: tbd}, 
+          {type: CMSDK_CM7_VHT,        model: tbd,  board: tbd}, 
+          {type: CMSDK_CM7_SP_VHT,     model: tbd,  board: tbd}, 
+          {type: CMSDK_CM7_DP_VHT,     model: tbd,  board: tbd}, 
+          {type: IOTKit_CM23_VHT,      model: tbd,  board: tbd}, 
+          {type: IOTKit_CM33_VHT,      model: tbd,  board: tbd}, 
+          {type: IOTKit_CM33_FP_VHT,   model: tbd,  board: tbd}, 
+          {type: ARMCM0,               model: tbd,  board: tbd}, 
+          {type: ARMCM0P,              model: tbd,  board: tbd}, 
+          {type: ARMCM1,               model: tbd,  board: tbd}, 
+          {type: ARMCM3,               model: tbd,  board: tbd}, 
+          {type: ARMCM55,              model: tbd,  board: tbd}, 
+          {type: ARMCM85,              model: tbd,  board: tbd}
         ]
 
         build: [ 
@@ -76,7 +86,7 @@ jobs:
       # https://github.com/actions/checkout
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate vcpkg
         uses: ARM-software/cmsis-actions/vcpkg@v1
@@ -139,12 +149,23 @@ jobs:
         ]
 
         target: [
-          {type: ARMCM0,   model: tbd,  board: tbd}, 
-          {type: ARMCM0P,  model: tbd,  board: tbd}, 
-          {type: ARMCM1,   model: tbd,  board: tbd}, 
-          {type: ARMCM3,   model: tbd,  board: tbd}, 
-          {type: ARMCM55,  model: tbd,  board: tbd}, 
-          {type: ARMCM85,  model: tbd,  board: tbd}
+          {type: CMSDK_CM0_VHT,        model: tbd,  board: tbd}, 
+          {type: CMSDK_CM0plus_VHT,    model: tbd,  board: tbd}, 
+          {type: CMSDK_CM3_VHT,        model: tbd,  board: tbd}, 
+          {type: CMSDK_CM4_VHT,        model: tbd,  board: tbd}, 
+          {type: CMSDK_CM4_FP_VHT,     model: tbd,  board: tbd}, 
+          {type: CMSDK_CM7_VHT,        model: tbd,  board: tbd}, 
+          {type: CMSDK_CM7_SP_VHT,     model: tbd,  board: tbd}, 
+          {type: CMSDK_CM7_DP_VHT,     model: tbd,  board: tbd}, 
+          {type: IOTKit_CM23_VHT,      model: tbd,  board: tbd}, 
+          {type: IOTKit_CM33_VHT,      model: tbd,  board: tbd}, 
+          {type: IOTKit_CM33_FP_VHT,   model: tbd,  board: tbd}, 
+          {type: ARMCM0,               model: tbd,  board: tbd}, 
+          {type: ARMCM0P,              model: tbd,  board: tbd}, 
+          {type: ARMCM1,               model: tbd,  board: tbd}, 
+          {type: ARMCM3,               model: tbd,  board: tbd}, 
+          {type: ARMCM55,              model: tbd,  board: tbd}, 
+          {type: ARMCM85,              model: tbd,  board: tbd}
         ]
 
         build: [ 
