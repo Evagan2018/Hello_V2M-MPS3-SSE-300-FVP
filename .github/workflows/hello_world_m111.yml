@@ -24,17 +24,21 @@ concurrency:
 
 jobs:
 
-  install:
-    # The intention of this part of the code is to do the checkout of the repository in this job and use it in later jobs.
-    # Get first the runner.name
+  diagnosis:
+    # In preparation: The intention of this part of the code is to do the checkout
+    # of the repository in this job and share the workspace in subsequent jobs.
+
+    # Diagnosis: Get the current runner.name and the Concurrency group
     runs-on: ubuntu-latest
     outputs:
       established-runner: ${{ runner.name }}
     steps:
-      - run: echo "selected runner = ${{ runner.name }}"
+      - run: | 
+          echo "Info: Selected runner = ${{ runner.name }}"
+          echo "Info: Concurrency group = ${{ github.workflow }}-${{ github.ref }}"
 
   bld_exe:
-    needs: [install]
+    needs: [diagnosis]
     runs-on: ubuntu-latest
     
     if: ${{ always() && contains(needs.*.result, 'success') }}
@@ -121,7 +125,7 @@ jobs:
 
 
   download_logs:
-    needs: [install, bld_exe]
+    needs: [bld_exe]
     if: ${{ always() }}
     runs-on: ubuntu-latest
 
