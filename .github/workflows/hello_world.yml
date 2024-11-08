@@ -61,7 +61,7 @@ jobs:
           {type: Debug}
         ]
 
-      max-parallel: 8
+      max-parallel: 12
 
     steps:
       - name: Checkout
@@ -97,6 +97,10 @@ jobs:
         run: |
             # Check if a build exist
             if [ -f ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
+                # Check if the correspond build output directory exist. Special corner case handling i.e. Pack download error.
+                if [ ! -d out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}]; then
+                  mkdir -p out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}
+                fi 
                 tree
             else
                 touch ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
