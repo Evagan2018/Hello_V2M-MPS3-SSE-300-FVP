@@ -1,4 +1,4 @@
-name: Hello World example (1 job with sequential step execution)
+name: 1 matrix job
 
 on:
   workflow_dispatch:
@@ -10,16 +10,22 @@ on:
 
   push:
     branches: [main]
-    paths:    
+    paths:
       - ./**
 
   schedule:
     - cron: '00 22 * * 0'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  install_build_execute:
+  bld_exe:
 
     runs-on: ubuntu-latest
+    outputs:
+      established-runner: ${{ runner.name }}
 
     strategy:
       fail-fast: false
@@ -55,7 +61,7 @@ jobs:
           {type: Debug}
         ]
 
-      max-parallel: 1
+      max-parallel: 8
 
     steps:
       - name: Checkout
@@ -67,8 +73,15 @@ jobs:
       - name: Activate Arm tool license
         uses: ARM-software/cmsis-actions/armlm@v1
 
+      - name: Diagnosis
+        run: |
+          echo "Info: Selected runner = ${{ runner.name }}"
+          echo "Info: Concurrency group = ${{ github.workflow }}-${{ github.ref }}"
+
       # Build executable for a specific target compiler pair
       - name: Build executable
+        id: build_executable
+        if: always()
         # Remark regarding the build log redirection (tee command). Do not redirect the build log to the ./out/hello_world/ folder.
         # This folder is currently used by the cbuild process. Access operations to this folder during the build operations will throws errors.
         # The build process creates in ./out/hello_world/ the following subdirectory structure:  /target_type/build_type/compiler_name/
@@ -78,21 +91,33 @@ jobs:
                 --context hello_world.${{ matrix.build.type }}+${{ matrix.target.type }} \
                 --toolchain ${{ matrix.compiler.name }} --rebuild \
                 --log ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+
+      - name: Error build log
+        if: always() && steps.build_executable.outcome != 'success'
+        run: |
+            # Check if a build exist
+            if [ -f ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
+                tree
+            else
+                touch ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+                mkdir -p out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}
+                echo "Error: Build log does not exist!" > ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+                tree
+            fi 
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
-            if [ $? -eq 0 ]; then
-               echo "Build succeeded"
-            else 
-               echo "Build failed"
-               exit 1
-            fi
+      - name: Success build log
+        if: steps.build_executable.outcome == 'success'
+        run: | 
+            mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
-      # Upload build log
       - name: Upload build log
+        if: always() && ((steps.build_executable.outcome == 'success') || (steps.build_executable.outcome != 'success'))
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+          if-no-files-found: ignore
 
       # Create an artifact directory for the logs
       - name: Create artifact directory
@@ -101,6 +126,8 @@ jobs:
 
       # Download previous generated executables
       - name: Download ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+        id: download_logs
+        if: always()
         uses: actions/download-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
@@ -108,11 +135,15 @@ jobs:
 
       # Move downloaded logs to the artifact folder
       - name: Move downloaded logs
-        run: |        
-          mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
+        if: always()
+        run: |
+          if [ -f ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
+             mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ;
+          fi
 
       # Diagnosis: Show the directory structure of artifacts folder
       - name: Show downloaded logs
         run: |
           echo "Show artifact folder"
           tree artifact
+          cat ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
