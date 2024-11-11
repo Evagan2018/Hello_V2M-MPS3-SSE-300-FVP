@@ -32,9 +32,28 @@ jobs:
     outputs:
       established-runner: ${{ runner.name }}
     steps:
-      - run: | 
-          echo "Info: Selected runner = ${{ runner.name }}"
-          echo "Info: Concurrency group = ${{ github.workflow }}-${{ github.ref }}"
+    # Setup required toolchains and license
+    # https://github.com/actions/checkout
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    # https://github.com/ARM-software/cmsis-actions
+    - name: Activate vcpkg
+      uses: ARM-software/cmsis-actions/vcpkg@v1
+
+    - name: Diagnosis
+      run: | 
+        echo "Info: Selected runner = ${{ runner.name }}"
+        echo "Info: Concurrency group = ${{ github.workflow }}-${{ github.ref }}"
+        tree
+
+    - name: Cache repo and tools
+      id: cache-repo-and-tools
+      uses: actions/cache@v4
+      with:
+          path: .
+          key: Hello_V2M-MPS3-SSE-300-FVP
+
 
   bld_exe:
     needs: [diagnosis]
@@ -84,12 +103,19 @@ jobs:
     steps:
       # Setup required toolchains and license
       # https://github.com/actions/checkout
-      - name: Checkout
-        uses: actions/checkout@v4
+      # - name: Checkout
+      #  uses: actions/checkout@v4
 
       # https://github.com/ARM-software/cmsis-actions
-      - name: Activate vcpkg
-        uses: ARM-software/cmsis-actions/vcpkg@v1
+      #- name: Activate vcpkg
+      #  uses: ARM-software/cmsis-actions/vcpkg@v1
+
+      - name: Restore cached repo and tools
+        id: restore-cached-repo-and-tools
+        uses: actions/cache/restore@v4
+        with:
+            path: .
+            key: Hello_V2M-MPS3-SSE-300-FVP
 
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate Arm tool license
