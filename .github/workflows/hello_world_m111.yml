@@ -54,7 +54,7 @@ jobs:
         path: |
           .
           /home/runner
-          key: Hello_V2M-MPS3-SSE-300-FVP
+        key: Hello_V2M-MPS3-SSE-300-FVP
 
 
   bld_exe:
@@ -116,10 +116,10 @@ jobs:
         id: restore-cached-repo-and-tools
         uses: actions/cache/restore@v4
         with:
-            path: |
-              .
-              /home/runner
-            key: Hello_V2M-MPS3-SSE-300-FVP
+          path: |
+            .
+            /home/runner
+          key: Hello_V2M-MPS3-SSE-300-FVP
 
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate Arm tool license
