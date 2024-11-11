@@ -36,7 +36,7 @@ jobs:
         echo "Info: Selected runner = ${{ runner.name }}"
         echo "Info: Concurrency group = ${{ github.workflow }}-${{ github.ref }}"
 
-  bld_exe:
+  build:
     needs: [diagnosis]
     runs-on: ubuntu-latest
 
@@ -138,8 +138,8 @@ jobs:
           if-no-files-found: ignore
 
 
-  download_logs:
-    needs: [bld_exe]
+  downl_logs:
+    needs: [build]
     if: ${{ always() }}
     runs-on: ubuntu-latest
 
