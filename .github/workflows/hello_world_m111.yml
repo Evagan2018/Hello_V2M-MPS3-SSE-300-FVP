@@ -137,6 +137,12 @@ jobs:
           path: ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
           if-no-files-found: ignore
 
+      - uses: austenstone/job-summary@v2.0
+        id: job-summary
+        with:
+          create-pdf: false
+      - run: echo "${{ steps.job-summary.outputs.job-summary }}"          
+
 
   downl_logs:
     needs: [build]
