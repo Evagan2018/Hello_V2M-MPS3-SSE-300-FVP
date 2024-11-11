@@ -198,9 +198,9 @@ jobs:
       # Move downloaded logs to the artifact folder
       - name:  Move downloaded build logs
         id: move_downloaded_build_logs
-        if: always() && (steps.download_build_logs.outcome == 'success')
+        if: always()
         run: |
-          tree tmp/        
+          tree tmp/
           if [ -f ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
              mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ;
           fi
