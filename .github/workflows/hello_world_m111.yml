@@ -200,12 +200,9 @@ jobs:
         id: move_downloaded_build_logs
         if: always()
         run: |
-          tree tmp/
           if [ -f ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
              mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ;
           fi
-          tree artifact/
-          tree out/
 
       # Diagnosis: Show the directory structure of the artifacts folder
       - name: Show downloaded logs
