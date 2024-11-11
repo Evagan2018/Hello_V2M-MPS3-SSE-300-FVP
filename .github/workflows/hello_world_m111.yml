@@ -20,7 +20,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-
 jobs:
 
   diagnosis:
@@ -32,30 +31,10 @@ jobs:
     outputs:
       established-runner: ${{ runner.name }}
     steps:
-    # Setup required toolchains and license
-    # https://github.com/actions/checkout
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    # https://github.com/ARM-software/cmsis-actions
-    # - name: Activate vcpkg
-    #  uses: ARM-software/cmsis-actions/vcpkg@v1
-
     - name: Diagnosis
       run: | 
         echo "Info: Selected runner = ${{ runner.name }}"
         echo "Info: Concurrency group = ${{ github.workflow }}-${{ github.ref }}"
-        tree
-
-    - name: Cache repo and tools
-      id: cache-repo-and-tools
-      uses: actions/cache@v4
-      with:
-        path: |
-          .
-          /home/runner
-        key: Hello_V2M-MPS3-SSE-300-FVP
-
 
   bld_exe:
     needs: [diagnosis]
@@ -105,17 +84,8 @@ jobs:
     steps:
       # Setup required toolchains and license
       # https://github.com/actions/checkout
-      # - name: Checkout
-      #  uses: actions/checkout@v4
-
-      - name: Restore cached repo and tools
-        id: restore-cached-repo-and-tools
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            .
-            /home/runner
-          key: Hello_V2M-MPS3-SSE-300-FVP
+      - name: Checkout
+        uses: actions/checkout@v4
 
       # https://github.com/ARM-software/cmsis-actions
       - name: Activate vcpkg
@@ -160,7 +130,7 @@ jobs:
             mv ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./out/hello_world/${{ matrix.target.type }}/${{ matrix.build.type }}/${{ matrix.compiler.name }}/
 
       - name: Upload build log
-        if: always() && ((steps.build_executable.outcome == 'success') || (steps.build_executable.outcome != 'success'))
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log
@@ -230,12 +200,14 @@ jobs:
         id: move_downloaded_build_logs
         if: always() && (steps.download_build_logs.outcome == 'success')
         run: |
+          tree tmp/        
           if [ -f ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ]; then
              mv ./tmp/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ./artifact/${{ matrix.target.type }}.${{ matrix.compiler.name }}.${{ matrix.build.type }}.build.log ;
           fi
 
       # Diagnosis: Show the directory structure of the artifacts folder
       - name: Show downloaded logs
+        if: always()      
         run: |
           tree tmp/ artifact/ out/
           echo "Show artifact folder"
